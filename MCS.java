@@ -207,8 +207,9 @@ public class MCS{
         System.out.println("PEO: "+ peoList);
         System.out.println("clique Lists: " +kliqueList);
     }
-
-    ArrayList<Integer> findRandomClique(){
+    // i may be able to find the maximum clique if i force the search from the vertex with the most neighbors - higher degree 
+    // and keep expanding the graph based on which neighbor has the higher degree
+    ArrayList<Integer> findRandomClique(){ // it seems that it finds maximals or maximum
         ArrayList<Integer> randomClique = new ArrayList<Integer>();
         Random rnd = new Random();
         int elementPosition = rnd.nextInt(vertexCounter);
@@ -269,9 +270,10 @@ public class MCS{
         // object.runMCS();
         // object.runPrim();
         // object.findRandomClique();
-        object.addVertex();
-        object.printAdjList();
-        object.addVertex();
-        object.printAdjList();
+        // object.addVertex();
+        // object.printAdjList();
+        // object.addVertex();
+        // object.printAdjList();
+        object.findRandomClique();
     }
 }
