@@ -117,7 +117,6 @@ public class MCS{
         ArrayList<Integer> klique = new ArrayList<Integer>();
         klique.add(tempVertexList[elementPosition]);
         System.out.println(numberOfVertices);
-        // System.exit(1);
         for (int i=0; i<numberOfVertices-1; i++){
             
             ArrayList<Integer> unionList = new ArrayList<Integer>(); // L i+1
@@ -209,19 +208,7 @@ public class MCS{
         System.out.println("clique Lists: " +kliqueList);
     }
 
-    ArrayList<Integer> findRandomClique(/*int sizeLimit*/){
-        //Running Condition//
-        //if none of the neighbors of the existing items in the clique cannot be added to the current clique end the run
-        //pick a random vertex
-        //get his neighborhood
-        //how many neighbors does it have (degree)
-        //you cant find a clique including this vertex with size greater than its degree
-        //the clique size starting from this vertex will be the of equal or less to the starting vertex degree
-        //Construction of the clique//
-        //pick random vertex
-        //add this starting vertex to the clique
-        //add a random neighbor to the clique
-        //at each step you have to choose a vertex that allready has as neighbors the items in the existing clique
+    ArrayList<Integer> findRandomClique(){
         ArrayList<Integer> randomClique = new ArrayList<Integer>();
         Random rnd = new Random();
         int elementPosition = rnd.nextInt(vertexCounter);
@@ -230,20 +217,11 @@ public class MCS{
         Integer [] randomVertexNeighborhood = randomVertexNeighborhoodList.toArray(new Integer[randomVertexNeighborhoodList.size()]);
         int degree = randomVertexNeighborhood.length;
         randomClique.add(randomVertex);
-        //adding new items to the clique without backtracking
         int counter = 0;
-        // int sizeLimit = 2;
         while(randomClique.size() <= degree && randomVertexNeighborhood.length > counter /*&& randomClique.size() < sizeLimit*/){
             int range = randomVertexNeighborhood.length - counter;
-            // System.out.println("Range: " + range);
-            // if (range >= 0){
-                elementPosition = rnd.nextInt(range) + counter;
-            // }
-            // else{
-                // break;
-            // }
+            elementPosition = rnd.nextInt(range) + counter;
             randomVertex = randomVertexNeighborhood[elementPosition];
-            // System.out.println("counter: " + counter + " elementposition: " + elementPosition + " randVertexNeighborhood: " + randomVertexNeighborhoodList.toString());
             int tempSawp = randomVertexNeighborhood[counter];
             randomVertexNeighborhood[counter] = randomVertexNeighborhood[elementPosition];
             randomVertexNeighborhood[elementPosition] = tempSawp;
@@ -253,9 +231,7 @@ public class MCS{
                 if (tempRandomVertexNeighborhood.contains(cliqueItem)){ containsCounter++; }
             }
             if(containsCounter == randomClique.size()){ 
-                // System.out.println("random Vertex added: " + randomVertex);
                 randomClique.add(randomVertex);
-                // System.out.println("RandomClique: " + randomClique);
                 randomVertexNeighborhoodList = this.adjList.get(randomVertex);
                 randomVertexNeighborhood = randomVertexNeighborhoodList.toArray(new Integer[randomVertexNeighborhoodList.size()]);
                 counter = 0;
