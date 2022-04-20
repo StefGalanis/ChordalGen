@@ -206,6 +206,7 @@ public class MCS{
         kliqueList.add(klique);
         System.out.println("PEO: "+ peoList);
         System.out.println("clique Lists: " +kliqueList);
+        
     }
 
 
@@ -282,14 +283,14 @@ public class MCS{
 
     
     public static void main(String args[]){
-        MCS object = new MCS(1);
-        // object.runMCS();
+        MCS object = new MCS(2);
+        object.runMCS();
         // object.runPrim();
         // object.findRandomClique();
         // object.addVertex();
         // object.printAdjList();
         // object.addVertex();
         // object.printAdjList();
-        object.findRandomClique();
+        // object.findRandomClique();
     }
 }
