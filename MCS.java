@@ -7,12 +7,13 @@ public class MCS{
     private ArrayList<ArrayList<Integer> > kliqueList;
     private ArrayList<Integer> vertexList;
     private Integer vertexCounter;
+    private Integer edgeCounter;
     
     public MCS(int choice){
         if (choice == 1){
             this.adjList = new ArrayList<ArrayList<Integer>>();
             this.kliqueList = new ArrayList<ArrayList<Integer>>();
-            ArrayList edge = new ArrayList();
+            // ArrayList edge = new ArrayList();
             Integer[] spam = new Integer[] { 0, 1, 2, 3 };
             Integer[] adj0 = new Integer[] {1,3};
             adjList.add(new ArrayList(Arrays.asList(adj0)));
@@ -31,7 +32,7 @@ public class MCS{
         else if(choice == 2){
             this.adjList = new ArrayList<ArrayList<Integer>>();
             this.kliqueList = new ArrayList<ArrayList<Integer>>();
-            ArrayList edge = new ArrayList();
+            // ArrayList edge = new ArrayList();
             Integer[] spam = new Integer[] { 0, 1, 2, 3, 4, 5, 6 };
             Integer[] adj0 = new Integer[] {4,6};
             adjList.add(new ArrayList(Arrays.asList(adj0)));
@@ -49,9 +50,22 @@ public class MCS{
             adjList.add(new ArrayList(Arrays.asList(adj6)));
             this.vertexCounter = 7;
             this.vertexList = new ArrayList(Arrays.asList(spam));
-            for(ArrayList<Integer> item : adjList){
-                System.out.println(item);
-            }
+            // for(ArrayList<Integer> item : adjList){
+            //     System.out.println(item);
+            // }
+            printAdjList();
+        }
+        else if(choice == 3){
+            this.adjList = new ArrayList<ArrayList<Integer>>();
+            Integer[] spam = new Integer[] { 0, 1 };
+            Integer[] adj0 = new Integer[] {1};
+            this.adjList.add(new ArrayList(Arrays.asList(adj0)));
+            Integer[] adj1 = new Integer[] {0};
+            this.adjList.add(new ArrayList(Arrays.asList(adj1)));
+            this.vertexCounter = 2;
+            this.edgeCounter = 1;
+            this.vertexList = new ArrayList(Arrays.asList(spam));
+            printAdjList();
         }
         // System.out.println(adjList);
         // System.out.println(adjList.get(0));
@@ -103,7 +117,7 @@ public class MCS{
         System.out.println("PEO: "+ peoList);
     }
 
-    void runPrim(){
+    public void runPrim(){
         ArrayList<Integer> peoList = new ArrayList<Integer>();
         ArrayList<Integer> next = new ArrayList<Integer>();
         int numberOfVertices = vertexList.size();
@@ -210,7 +224,7 @@ public class MCS{
     }
 
 
-    ArrayList<Integer> findRandomClique(){ // it seems that it finds maximals or maximum
+    public ArrayList<Integer> findRandomClique(){ 
         ArrayList<Integer> randomClique = new ArrayList<Integer>();
         Random rnd = new Random();
         int elementPosition = rnd.nextInt(vertexCounter);
@@ -218,10 +232,13 @@ public class MCS{
         ArrayList<Integer> randomVertexNeighborhoodList = this.adjList.get(randomVertex);
         Integer [] randomVertexNeighborhood = randomVertexNeighborhoodList.toArray(new Integer[randomVertexNeighborhoodList.size()]);
         int degree = randomVertexNeighborhood.length;
+        // pick a random number from 1 to degree
+        int cliqueSize = rnd.nextInt(degree)+1;
         randomClique.add(randomVertex);
         int counter = 0;
-        while(randomClique.size() <= degree && randomVertexNeighborhood.length > counter /*&& randomClique.size() < sizeLimit*/){
-            int range = randomVertexNeighborhood.length - counter;
+        while(randomClique.size() <= cliqueSize && randomVertexNeighborhood.length > counter /*&& randomClique.size() < sizeLimit*/){
+            int range = (randomVertexNeighborhood.length - counter);
+            // System.out.println(range);
             elementPosition = rnd.nextInt(range) + counter;
             randomVertex = randomVertexNeighborhood[elementPosition];
             int tempSawp = randomVertexNeighborhood[counter];
@@ -246,7 +263,21 @@ public class MCS{
         return randomClique;
     }
 
-    ArrayList<Integer> findMaximumClique(){
+    public void addVertex(){
+
+        ArrayList<Integer> clique = findRandomClique();
+        System.out.println("-----------");
+        int newVertex = this.vertexList.get(vertexList.size()-1) + 1;
+        for (int itemClique : clique){
+            this.adjList.get(itemClique).add(newVertex);
+            this.edgeCounter++;
+        }
+        this.adjList.add(clique);
+        this.vertexList.add(newVertex);
+        this.vertexCounter++;
+    }
+
+    public ArrayList<Integer> findMaximumClique(){
         ArrayList<Integer> maximumClique = new ArrayList<Integer>();
         int maxDegree = -1;
         int maxDegreeVertex = -1;
@@ -257,38 +288,28 @@ public class MCS{
             }
         }
         ArrayList<Integer> maxDegreeVertexNeighborhoodList = this.adjList.get(maxDegreeVertex);
-
+        return maxDegreeVertexNeighborhoodList;
     }
 
 
-    
-    void addVertex(){
-
-        ArrayList<Integer> clique = findRandomClique();
-        System.out.println();
-        int newVertex = this.vertexList.get(vertexList.size()-1) + 1;
-        for (int itemClique : clique){
-            this.adjList.get(itemClique).add(newVertex);
-        }
-        this.adjList.add(clique);
-        this.vertexList.add(newVertex);
-        this.vertexCounter++;
-    }
-
-    void printAdjList(){
+    public void printAdjList(){
+        int vertex = 0;
         for(ArrayList<Integer> item : this.adjList){
-            System.out.println(item);
+            System.out.println("Node" + vertex + ":" + item);
+            vertex++;
         }
+        System.out.println("Number of edges:" + this.edgeCounter + "\s Number of Vertices:" + this.vertexCounter);
     }
 
     
     public static void main(String args[]){
-        MCS object = new MCS(2);
-        object.runMCS();
+        MCS object = new MCS(3);
+        // object.runMCS();
         // object.runPrim();
-        // object.findRandomClique();
-        // object.addVertex();
-        // object.printAdjList();
+        for (int j=0; j<10; j++){
+            object.addVertex();
+        }
+        object.printAdjList();
         // object.addVertex();
         // object.printAdjList();
         // object.findRandomClique();
