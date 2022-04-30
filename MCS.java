@@ -5,6 +5,7 @@ import java.util.Random;
 public class MCS{
     private ArrayList<ArrayList<Integer> > adjList;
     private ArrayList<ArrayList<Integer> > kliqueList;
+    private ArrayList<ArrayList<Integer> > cliqueTreeEdges;
     private ArrayList<Integer> vertexList;
     private Integer vertexCounter;
     private Integer edgeCounter;
@@ -32,6 +33,7 @@ public class MCS{
         else if(choice == 2){
             this.adjList = new ArrayList<ArrayList<Integer>>();
             this.kliqueList = new ArrayList<ArrayList<Integer>>();
+            this.cliqueTreeEdges = new ArrayList<ArrayList<Integer>>() ;
             // ArrayList edge = new ArrayList();
             Integer[] spam = new Integer[] { 0, 1, 2, 3, 4, 5, 6 };
             Integer[] adj0 = new Integer[] {4,6};
@@ -49,6 +51,7 @@ public class MCS{
             Integer[] adj6 = new Integer[] {0,3,4,5};
             adjList.add(new ArrayList(Arrays.asList(adj6)));
             this.vertexCounter = 7;
+            this.edgeCounter = 10;
             this.vertexList = new ArrayList(Arrays.asList(spam));
             // for(ArrayList<Integer> item : adjList){
             //     System.out.println(item);
@@ -57,6 +60,7 @@ public class MCS{
         }
         else if(choice == 3){
             this.adjList = new ArrayList<ArrayList<Integer>>();
+            this.kliqueList = new ArrayList<ArrayList<Integer>>();
             Integer[] spam = new Integer[] { 0, 1 };
             Integer[] adj0 = new Integer[] {1};
             this.adjList.add(new ArrayList(Arrays.asList(adj0)));
@@ -67,8 +71,6 @@ public class MCS{
             this.vertexList = new ArrayList(Arrays.asList(spam));
             printAdjList();
         }
-        // System.out.println(adjList);
-        // System.out.println(adjList.get(0));
     }
 
     public void runMCS(){
@@ -165,7 +167,7 @@ public class MCS{
             
             if (new_card <= prev_card){
 
-                kliqueList.add(klique);
+                this.kliqueList.add(klique);
 
                 klique = new ArrayList<Integer>();
                 s++; //clique counter
@@ -186,7 +188,7 @@ public class MCS{
                     int vertexUk = peoList.get(k);
                     int p = 0;
                     boolean flag = false;
-                    for (ArrayList<Integer> tempklique : kliqueList){
+                    for (ArrayList<Integer> tempklique : this.kliqueList){
                         for (int kliqueItem : tempklique){
                             
                             if (tempklique.contains(vertexUk)){
@@ -201,6 +203,10 @@ public class MCS{
                     }
                     // System.out.println("Ks: " + s + "Kp: " + p);
                     // create an edge between Ks and Kp, Et = Et U {Ks,Kp}
+                    ArrayList<Integer> tempList = new ArrayList<Integer>();
+                    tempList.add(s);
+                    tempList.add(p);
+                    this.cliqueTreeEdges.add(tempList);
                 }
 
                 klique.add(uVertex);
@@ -208,6 +214,7 @@ public class MCS{
                 prev_card = new_card;
                 // System.out.println("current clique: " +klique);
                 // System.out.println("clique Lists: " +kliqueList);
+                
             }
             else{
                 klique.add(uVertex);
@@ -219,7 +226,9 @@ public class MCS{
         }
         kliqueList.add(klique);
         System.out.println("PEO: "+ peoList);
-        System.out.println("clique Lists: " +kliqueList);
+        // System.out.println("clique Lists: " +this.kliqueList);
+        prindKliqueList();
+        System.out.println("Clique Tree Edges: " +this.cliqueTreeEdges);
         
     }
 
@@ -277,6 +286,11 @@ public class MCS{
         this.vertexCounter++;
     }
 
+    public void mergeCliques(){
+        // ean duo klikes exoyn koines koryfes shmainei oti einai geitonikes
+        //
+    }
+
     public ArrayList<Integer> findMaximumClique(){
         ArrayList<Integer> maximumClique = new ArrayList<Integer>();
         int maxDegree = -1;
@@ -301,15 +315,22 @@ public class MCS{
         System.out.println("Number of edges:" + this.edgeCounter + "\s Number of Vertices:" + this.vertexCounter);
     }
 
+    public void prindKliqueList(){
+        int vertex = 0;
+        for(ArrayList<Integer> item : this.kliqueList){
+            System.out.println("Node" + vertex + ":" + item);
+            vertex++;
+        }
+    }
     
     public static void main(String args[]){
-        MCS object = new MCS(3);
+        MCS object = new MCS(2);
         // object.runMCS();
-        // object.runPrim();
-        for (int j=0; j<10; j++){
+        for (int j=0; j<0; j++){
             object.addVertex();
         }
         object.printAdjList();
+        object.runPrim();
         // object.addVertex();
         // object.printAdjList();
         // object.findRandomClique();
