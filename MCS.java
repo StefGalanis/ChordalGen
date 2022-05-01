@@ -201,8 +201,6 @@ public class MCS{
                         }   
                         p++;
                     }
-                    // System.out.println("Ks: " + s + "Kp: " + p);
-                    // create an edge between Ks and Kp, Et = Et U {Ks,Kp}
                     ArrayList<Integer> tempList = new ArrayList<Integer>();
                     tempList.add(s);
                     tempList.add(p);
@@ -286,9 +284,34 @@ public class MCS{
         this.vertexCounter++;
     }
 
+    public ArrayList<Integer> findAdjacentCliques(){
+        // ean ftiaksw to klique tree me synolo akmwn apla dialegw mia akmh kai sth sunexeia kanw merge twn dyo aytwn klikwn pou periexontai
+        // stis korufes poy symmetexoyn sthn akmh
+        Random rnd = new Random();
+        int randomElement = rnd.nextInt(this.kliqueList.size());
+        ArrayList<Integer> list1 = this.kliqueList.get(randomElement);
+        int nextRandomElement = randomElement;
+        boolean flag = false
+        while (flag == false){
+            do{
+                nextRandomElement = rnd.nextInt(this.kliqueList.size());
+            }while(nextRandomElement == randomElement);
+            ArrayList<Integer> list2 = this.kliqueList.get(nextRandomElement);
+            for (int item : list1){
+                if (list2.contains(item)){
+                    flag = true;
+                    break;
+                }
+            }
+        }
+        ArrayList<Integer> adjacentCliques = new ArrayList<Integer>();
+        adjacentCliques.add(randomElement);
+        adjacentCliques.add(nextRandomElement);
+        return adjacentCliques;
+    }
+
     public void mergeCliques(){
-        // ean duo klikes exoyn koines koryfes shmainei oti einai geitonikes
-        //
+        ArrayList<Integer> adjacentCliques = findAdjacentCliques();
     }
 
     public ArrayList<Integer> findMaximumClique(){
