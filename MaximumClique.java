@@ -44,7 +44,7 @@ public class MaximumClique{
                 sizeOfSubset = rnd.nextInt(maximumClique.size()-2) + 2;
                 System.out.println("randomSubset of : " + sizeOfSubset);
             }
-            System.out.println(sizeOfSubset);
+            // System.out.println(sizeOfSubset);
             for (int i=0; i<sizeOfSubset; i++){
                 int range = sizeOfSubset - i;
                 int randomElement = rnd.nextInt(range) + i;
@@ -72,13 +72,18 @@ public class MaximumClique{
         }
     }
 
+    public int getMaximumCliqueSize(){
+        return this.maximumCliqueSize;
+    }
+
 
 
     public static void main(String args[]){
             MaximumClique object = new MaximumClique();
-            for(int j=0; j<10; j++){
+            for(int j=0; j<6; j++){
                 object.addVertex();
             }
+            System.out.println(object.getMaximumCliqueSize());
             // object.runPrim();
             // object.findRandomClique();
             // object.addVertex();

@@ -53,9 +53,6 @@ public class MCS{
             this.vertexCounter = 7;
             this.edgeCounter = 10;
             this.vertexList = new ArrayList(Arrays.asList(spam));
-            // for(ArrayList<Integer> item : adjList){
-            //     System.out.println(item);
-            // }
             printAdjList();
         }
         else if(choice == 3){
@@ -310,9 +307,10 @@ public class MCS{
         return adjacentCliques;
     }
 
-    public void mergeCliques(){
-        ArrayList<Integer> adjacentCliques = findAdjacentCliques();
-    }
+    // public void mergeCliques(){
+    //     ArrayList<Integer> adjacentCliques = findAdjacentCliques();
+    //     ArrayList<Integer>
+    // }
 
     public ArrayList<Integer> findMaximumClique(){
         ArrayList<Integer> maximumClique = new ArrayList<Integer>();
