@@ -6,9 +6,11 @@ public class PEO{
     private ArrayList<ArrayList<Integer> > adjList;
     private ArrayList<Integer> vertexList;
     private Integer vertexCounter;
+    private ArrayList<ArrayList<Integer> > additionalEdges;
     
     public PEO(){
         this.adjList = new ArrayList<ArrayList<Integer>>();
+        this.additionalEdges = new ArrayList<ArrayList<Integer>>();
         ArrayList edge = new ArrayList();
         Integer[] spam = new Integer[] { 0, 1, 2 };
         Integer[] adj0 = new Integer[] {1};
@@ -23,7 +25,7 @@ public class PEO{
         // System.out.println(adjList.get(0));
     }
 
-    private void addVertex(){
+    public void addVertex(){
         ArrayList<Integer> neighbors = generateNeighbors();
         vertexList.add(vertexCounter);
         adjList.add(neighbors);
@@ -39,6 +41,9 @@ public class PEO{
                 if (neighborName != neighborName2){
                     if (!adjList.get(neighborName2).contains(neighborName)){
                         adjList.get(neighborName2).add(neighborName);
+                        // ArrayList<Integer> edge = new ArrayList<Integer>({neighborName2,neighborName});
+                        Integer [] edge = new Integer[] {neighborName2,neighborName};
+                        additionalEdges.add(new ArrayList(Arrays.asList(edge)));
                     }
                 }
             }
@@ -47,7 +52,9 @@ public class PEO{
         vertexCounter++;
     }
 
-    private ArrayList<Integer> generateNeighbors(){
+
+
+    public ArrayList<Integer> generateNeighbors(){
         //Integer[] spam = new Integer[] { 0, 1, 2, 3, 4 };
         //ArrayList<Integer> vertexList = new ArrayList(Arrays.asList(spam));
         Random rnd = new Random();
@@ -69,10 +76,15 @@ public class PEO{
         return neighbors;
     }
 
+    public void printAdditionalEdges(){
+        System.out.println("Additional Edges: " + this.additionalEdges);
+    }
+
 
     
     public static void main(String args[]){
         PEO object = new PEO();
         object.addVertex();
+        object.printAdditionalEdges();
     }
 }
