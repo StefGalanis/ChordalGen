@@ -11,6 +11,7 @@ public class MergeClique{
     private int numberOfVertices;
     private Random rnd;
     private ArrayList<ArrayList<Integer> > adjList;
+    private int numberOfEdges;
 
 
     public MergeClique(){
@@ -21,6 +22,7 @@ public class MergeClique{
         this.numberOfVertices = 0;
         this.rnd = new Random();
         this.adjList = new ArrayList<ArrayList<Integer>>();
+        this.numberOfEdges = 0;
         buildExample(0);
         printEdges();
     }
@@ -68,6 +70,7 @@ public class MergeClique{
             Integer[] adj6 = new Integer[] {0,3,4,5};
             this.adjList.add(new ArrayList(Arrays.asList(adj6)));
             this.numberOfVertices = 7;
+            this.numberOfEdges = 10;
             // this.edgeCounter = 10;
             this.vertices = new ArrayList(Arrays.asList(spam));
             printAdjList();
@@ -214,6 +217,9 @@ public class MergeClique{
     }
 
     public void mergeCliques(){
+        double edgeDensity = this.numberOfEdges / ((this.numberOfVertices*(this.numberOfVertices - 1))*0.5);
+        System.out.println(edgeDensity);
+        // double desiredEdgeDensity;
         if (cliqueTreeEdges.size()>1){
             int randomEdgeIndex = rnd.nextInt(this.cliqueTreeEdges.size()-1);
             ArrayList<Integer> randomEdge = this.cliqueTreeEdges.get(randomEdgeIndex);
@@ -227,6 +233,9 @@ public class MergeClique{
                     if (!adjList0.contains(item1) && item0 != item1){
                         adjList0.add(item1);
                         this.adjList.get(item1).add(item0);
+                        Integer [] edge = new Integer[] {item1,item0};
+                        this.edges.add(new ArrayList(Arrays.asList(edge)));
+                        this.numberOfEdges++;
                     }
                 }
             }
@@ -237,7 +246,7 @@ public class MergeClique{
             this.cliqueTreeEdges.remove(randomEdgeIndex);
         }
         else{
-            System.out.println("Graph is fully connected")
+            System.out.println("Graph is fully connected");
         }
     }
 
@@ -252,5 +261,6 @@ public class MergeClique{
         object.mergeCliques();
         object.printCliqueTree();
         object.printAdjList();
+        object.printEdges();
     }
 }
