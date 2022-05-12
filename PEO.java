@@ -33,7 +33,7 @@ public class PEO{
             int neighborName = neighbors.get(i);
             adjList.get(neighborName).add(vertexCounter);
         }
-        System.out.println(adjList);
+        // System.out.println(adjList);
         for (int i=0; i<neighbors.size(); i++){
             int neighborName2 = neighbors.get(i);
             for (int j=0; j<neighbors.size(); j++){
@@ -48,7 +48,7 @@ public class PEO{
                 }
             }
         }
-        System.out.println(adjList);
+        // System.out.println(adjList);
         vertexCounter++;
     }
 
@@ -60,7 +60,7 @@ public class PEO{
         Random rnd = new Random();
         ArrayList<Integer> neighbors = new ArrayList<Integer>();
         int numberOfNeighbors = rnd.nextInt(vertexList.size()-1)+1;
-        System.out.println("number of neighbors \t" + numberOfNeighbors);
+        // System.out.println("number of neighbors \t" + numberOfNeighbors);
         Integer [] tempVertexList = vertexList.toArray(new Integer[vertexList.size()]);
         Integer arraySize = tempVertexList.length; 
         int currentPos = 0;
@@ -72,7 +72,7 @@ public class PEO{
             tempVertexList[currentPos] = swap;
             currentPos++;
         }
-        System.out.println("neighbors \t" + neighbors.toString());
+        // System.out.println("neighbors \t" + neighbors.toString());
         return neighbors;
     }
 
@@ -80,11 +80,41 @@ public class PEO{
         System.out.println("Additional Edges: " + this.additionalEdges);
     }
 
-
+    public int runTest(int numberOfVetrices){
+        for (int i=0; i<numberOfVetrices; i++){
+            addVertex();
+        }
+        return this.additionalEdges.size();
+    }
     
     public static void main(String args[]){
-        PEO object = new PEO();
-        object.addVertex();
-        object.printAdditionalEdges();
+        Integer [] samples = new Integer[] { 20, 40, 60, 80, 100 };
+        int max = -1;
+        int min = 1;
+        boolean flag = false;
+        double avg = 0;
+        for(int sample : samples){
+            PEO object = new PEO();
+            int numberOfEdges = object.runTest(sample);
+            if (flag == false){
+                min = numberOfEdges;
+                flag = true;
+            }
+            else if (min > numberOfEdges){
+                min = numberOfEdges;
+            }
+            if (numberOfEdges > max){
+                max = numberOfEdges;
+            }
+            avg = avg + numberOfEdges;
+            // System.out.println();
+        }
+        avg = avg / samples.length;
+        System.out.println("max: " + max);
+        System.out.println("min: " + min);
+        System.out.println("avg: " + avg);
+        // object.addVertex();
+        // object.printAdditionalEdges();
+        
     }
 }
