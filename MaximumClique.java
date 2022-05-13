@@ -43,11 +43,11 @@ public class MaximumClique{
                 sizeOfSubset = maximumClique.size();
             }
             else{
-                System.out.println("Maximum Clique size: " + maximumClique.size());
+                // System.out.println("Maximum Clique size: " + maximumClique.size());
                 int randomNumber = this.rnd.nextInt(maximumClique.size()-1);
-                System.out.println("randomNumber: " + randomNumber);
+                // System.out.println("randomNumber: " + randomNumber);
                 sizeOfSubset = randomNumber + 2;
-                System.out.println("randomSubset size : " + sizeOfSubset);
+                // System.out.println("randomSubset size : " + sizeOfSubset);
             }
             // System.out.println(sizeOfSubset);
             for (int i=0; i<sizeOfSubset; i++){
@@ -58,7 +58,7 @@ public class MaximumClique{
                 maximumCliqueToArray[i] = maximumCliqueToArray[randomElement];
                 maximumCliqueToArray[randomElement] = tempSawp;
                 ArrayList<Integer> edge = new ArrayList<Integer>();
-                System.out.println("edge added {" + numberOfVertices + "," + randomVertex + "}");
+                // System.out.println("edge added {" + numberOfVertices + "," + randomVertex + "}");
                 edge.add(numberOfVertices);
                 edge.add(randomVertex);
                 this.edges.add(edge);
@@ -72,7 +72,7 @@ public class MaximumClique{
             else if ((sizeOfSubset+1) == maximumCliqueSize){
                 this.maximumKliqueList.add(newMaximumClique);
             }
-            System.out.println("Maximum Clique List: " + maximumKliqueList);
+            // System.out.println("Maximum Clique List: " + maximumKliqueList);
             this.numberOfVertices += 1;
         }
     }
@@ -87,14 +87,46 @@ public class MaximumClique{
         System.out.println("Added edges: "+ this.edges);
     }
 
+    public int runTest(int numberOfVetrices){
+        for (int i=0; i<numberOfVetrices; i++){
+            addVertex();
+        }
+        return this.edges.size();
+    }
+
 
     public static void main(String args[]){
+        Integer [] samples = new Integer[] { 20, 40, 60, 80, 100 };
+        int max = -1;
+        int min = 1;
+        boolean flag = false;
+        double avg = 0;
+        for(int sample : samples){
             MaximumClique object = new MaximumClique();
-            for(int j=0; j<6; j++){
-                object.addVertex();
+            int numberOfEdges = object.runTest(sample);
+            if (flag == false){
+                min = numberOfEdges;
+                flag = true;
             }
-            System.out.println(object.getMaximumCliqueSize());
-            object.printEdges();
+            else if (min > numberOfEdges){
+                min = numberOfEdges;
+            }
+            if (numberOfEdges > max){
+                max = numberOfEdges;
+            }
+            avg = avg + numberOfEdges;
+            // System.out.println();
+        }
+        avg = avg / samples.length;
+        System.out.println("max: " + max);
+        System.out.println("min: " + min);
+        System.out.println("avg: " + avg);
+            // MaximumClique object = new MaximumClique();
+            // for(int j=0; j<6; j++){
+            //     object.addVertex();
+            // }
+            // System.out.println(object.getMaximumCliqueSize());
+            // object.printEdges();
             // object.findRandomClique();
             // object.addVertex();
             // object.printAdjList();
