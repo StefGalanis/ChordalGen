@@ -1,4 +1,5 @@
 # ignore binary executables
 *.class
+*.csv
 Graph.java
 Vertex.java

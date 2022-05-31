@@ -1,6 +1,9 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
+import java.io.File;  
+import java.io.FileNotFoundException;  
+import java.util.Scanner; 
 
 public class MergeClique{
 
@@ -25,6 +28,47 @@ public class MergeClique{
         this.numberOfEdges = 0;
         buildExample(0);
         printEdges();
+    }
+
+    public MergeClique(String fileName){
+        this.edges = new ArrayList<ArrayList<Integer>>();
+        this.cliqueTreeEdges = new ArrayList<ArrayList<Integer>>();
+        this.cliqueList = new ArrayList<ArrayList<Integer>>();
+        this.vertices = new ArrayList<Integer>();
+        this.numberOfVertices = 0;
+        this.rnd = new Random();
+        this.adjList = new ArrayList<ArrayList<Integer>>();
+        this.numberOfEdges = 0;
+        try {
+            File myObj = new File("Graph20.csv");
+            Scanner myReader = new Scanner(myObj);
+            while (myReader.hasNextLine()) {
+                String data = myReader.nextLine();
+                String [] arrayData = data.split(",");
+                ArrayList<Integer> adjList = new ArrayList<Integer>();
+                int index = 0;
+                for (String item : arrayData){
+                    adjList.add(Integer.parseInt(arrayData[index]));
+                    index++;
+                }
+                this.adjList.add(adjList);
+            }
+            myReader.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+        System.out.println(this.adjList);
+        this.numberOfVertices = this.adjList.size();
+        this.vertices = new ArrayList(Arrays.asList(createVerticesArray()));
+    }
+
+    public Integer[] createVerticesArray() {
+        Integer[] a = new Integer[this.numberOfVertices];
+        for (int i = 0; i < this.numberOfVertices; i++) {
+            a[i] = i;
+        }
+        return a;
     }
 
     public void buildExample(int choice){
@@ -134,10 +178,6 @@ public class MergeClique{
         System.out.println("L:" + list);
     }
 
-    public void printCliqueTree(){
-        System.out.println("Clique tree edges: " + this.cliqueTreeEdges);
-        System.out.println("Clique tree cliques: " + this.cliqueList);
-    }
 
     public int getFirstCliqueMatch(int vertex){
         int position = 0;
@@ -216,6 +256,11 @@ public class MergeClique{
         return neighbors;
     }
 
+    public void printCliqueTree(){
+        System.out.println("Clique tree edges: " + this.cliqueTreeEdges);
+        System.out.println("Clique tree cliques: " + this.cliqueList);
+    }
+
     public void mergeCliques(){
         double edgeDensity = this.numberOfEdges / ((this.numberOfVertices*(this.numberOfVertices - 1))*0.5);
         System.out.println(edgeDensity);
@@ -252,15 +297,16 @@ public class MergeClique{
 
 
     public static void main(String args[]){
-        MergeClique object = new MergeClique();
-        // object.buildExample();
+        MergeClique object = new MergeClique("filename");
         object.createCliqueTree();
-        object.mergeCliques();
-        object.printCliqueTree();
-        object.printAdjList();
-        object.mergeCliques();
-        object.printCliqueTree();
-        object.printAdjList();
-        object.printEdges();
+        // object.buildExample();//
+        // object.createCliqueTree();
+        // object.mergeCliques();
+        // object.printCliqueTree();
+        // object.printAdjList();
+        // object.mergeCliques();
+        // object.printCliqueTree();
+        // object.printAdjList();
+        // object.printEdges();
     }
 }

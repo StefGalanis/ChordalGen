@@ -1,12 +1,18 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class PEO{
     private ArrayList<ArrayList<Integer> > adjList;
     private ArrayList<Integer> vertexList;
     private Integer vertexCounter;
     private ArrayList<ArrayList<Integer> > additionalEdges;
+    private int minDegree;
+    private int maxDegree;
+    private int avgDegree;
+
     
     public PEO(){
         this.adjList = new ArrayList<ArrayList<Integer>>();
@@ -21,6 +27,9 @@ public class PEO{
         adjList.add(new ArrayList(Arrays.asList(adj2)));
         this.vertexCounter = 3;
         this.vertexList = new ArrayList(Arrays.asList(spam));
+        this.minDegree = 0;
+        this.maxDegree = -1;
+        this.avgDegree = 0;
         // System.out.println(adjList);
         // System.out.println(adjList.get(0));
     }
@@ -87,6 +96,54 @@ public class PEO{
         return this.additionalEdges.size();
     }
     
+    public void calcualteDegree(){
+        boolean flag = false;
+        int sum = 0;
+        for (ArrayList<Integer> List : this.adjList){
+            int degree = List.size();
+            if (flag == false){
+                this.minDegree = degree;
+                flag = true;
+            }
+            if (degree > this.maxDegree){
+                this.maxDegree = degree;
+            }
+            if(degree < this.minDegree){
+                this.minDegree = degree;
+            }
+            sum = sum + degree;
+        }
+        this.avgDegree = sum / this.vertexCounter;
+        System.out.println("minDegree: " + this.minDegree + " maxDegree: " + this.maxDegree + " avgDegree: " + this.avgDegree);
+    }
+
+    public void extractGraphToFile(String fileName){
+        try {
+            FileWriter myWriter = new FileWriter(fileName + ".csv");
+            // myWriter.write("Files in Java might be tricky, but it is fun enough!");
+            // myWriter.close();
+            System.out.println("Successfully wrote to the file.");
+            for (ArrayList<Integer> list : this.adjList){
+                boolean flag = false;
+                for (int item : list){
+                    String dataToWrite = "" + item;
+                    if (flag == false){
+                        myWriter.write(dataToWrite);
+                        flag = true;
+                    }
+                    else{
+                        myWriter.write("," + dataToWrite);
+                    }
+                }
+                myWriter.write("\n");
+            }
+            myWriter.close();
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+    }
+
     public static void main(String args[]){
         Integer [] samples = new Integer[] { 20, 40, 60, 80, 100 };
         int max = -1;
@@ -107,7 +164,10 @@ public class PEO{
                 max = numberOfEdges;
             }
             avg = avg + numberOfEdges;
+            String fileName = "Graph" + "" + sample;
+            object.calcualteDegree();
             // System.out.println();
+            object.extractGraphToFile(fileName);
         }
         avg = avg / samples.length;
         System.out.println("max: " + max);
