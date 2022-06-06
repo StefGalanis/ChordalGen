@@ -15,7 +15,9 @@ public class MergeClique{
     private Random rnd;
     private ArrayList<ArrayList<Integer> > adjList;
     private int numberOfEdges;
-
+    private int minCliqueSize;
+    private int maxCliqueSize;
+    private double avgCliqueSize;
 
     public MergeClique(){
         this.edges = new ArrayList<ArrayList<Integer>>();
@@ -39,8 +41,11 @@ public class MergeClique{
         this.rnd = new Random();
         this.adjList = new ArrayList<ArrayList<Integer>>();
         this.numberOfEdges = 0;
+        this.minCliqueSize = -1;
+        this.maxCliqueSize = -1;
+        this.avgCliqueSize = 0;
         try {
-            File myObj = new File("Graph20.csv");
+            File myObj = new File(fileName);
             Scanner myReader = new Scanner(myObj);
             while (myReader.hasNextLine()) {
                 String data = myReader.nextLine();
@@ -58,7 +63,7 @@ public class MergeClique{
             System.out.println("An error occurred.");
             e.printStackTrace();
         }
-        System.out.println(this.adjList);
+        // System.out.println(this.adjList);
         this.numberOfVertices = this.adjList.size();
         this.vertices = new ArrayList(Arrays.asList(createVerticesArray()));
     }
@@ -173,9 +178,10 @@ public class MergeClique{
             prev_card = new_card;
         }
         this.cliqueList.add(clique);
-        printCliqueTree();
+        // printCliqueTree();
         System.out.println("Clique Tree number of edges:" + edgeCounter);
-        System.out.println("L:" + list);
+        System.out.println("maximal cliques " + cliqueList.size());
+        // System.out.println("L:" + list);
     }
 
 
@@ -205,16 +211,6 @@ public class MergeClique{
         return -1;
     }
 
-    public ArrayList<Integer> calculateElementsIntersection(int vertex, ArrayList<Integer> list){
-        ArrayList<Integer> neighbors = findNeighbors(vertex);
-        ArrayList<Integer> intersection = new ArrayList<Integer>();
-        for (int neighbor : neighbors){
-            if (list.contains(neighbor)){
-                intersection.add(neighbor);
-            }
-        }
-        return intersection;
-    }
     
     public ArrayList<Integer> calculateElementsIntersection(int vertex, ArrayList<Integer> list, ArrayList<ArrayList<Integer>> otherList){
         ArrayList<Integer> neighbors = this.adjList.get(vertex);
@@ -238,28 +234,6 @@ public class MergeClique{
         return counter;
     }
 
-    public ArrayList<Integer> findNeighbors(int vertex){
-        ArrayList<Integer> neighbors = new ArrayList<Integer>();
-        // System.out.println("edges:"+this.edges);
-        for (ArrayList<Integer> edge : this.edges){
-            if(edge.contains(vertex)){
-                // System.out.println("edge:"+edge);
-                for (int item : edge){
-                    if (item != vertex){
-                        neighbors.add(item);
-                    }
-                } 
-            }
-        }
-        // System.out.println("vertex"+vertex+"\s"+neighbors);
-        // System.exit(1);
-        return neighbors;
-    }
-
-    public void printCliqueTree(){
-        System.out.println("Clique tree edges: " + this.cliqueTreeEdges);
-        System.out.println("Clique tree cliques: " + this.cliqueList);
-    }
 
     public void mergeCliques(){
         double edgeDensity = this.numberOfEdges / ((this.numberOfVertices*(this.numberOfVertices - 1))*0.5);
@@ -296,8 +270,55 @@ public class MergeClique{
     }
 
 
+
+    public void calculateCliqueSize(){
+        int max = -1;
+        int min = 1;
+        boolean flag = false;
+        double avg = 0;
+        for (ArrayList<Integer> list : this.cliqueList){
+            if (flag == false){
+                min = list.size();
+                flag = true;
+            }
+            else if (min > list.size()){
+                min = list.size();
+            }
+            if (list.size() > max){
+                max = list.size();
+            }
+            avg += list.size();
+        }
+        avg = avg / cliqueList.size();
+        this.minCliqueSize = min;
+        this.maxCliqueSize = max;
+        this.avgCliqueSize = avg;
+    }
+
+    public int getMinimumCliqueSize(){
+        return this.minCliqueSize;
+    }
+
+    public int getMaximumCliqueSize(){
+        return this.maxCliqueSize;
+    }
+
+    public double getAvarageCliqueSize(){
+        return this.avgCliqueSize;
+    }
+
+    public void printCliqueTree(){
+        System.out.println("Clique tree edges: " + this.cliqueTreeEdges);
+        System.out.println("Clique tree cliques: " + this.cliqueList);
+    }
+
+    public int getCliqueListSize(){
+        return this.cliqueList.size();
+    }
+
+
     public static void main(String args[]){
-        MergeClique object = new MergeClique("filename");
+        MergeClique object = new MergeClique();
         object.createCliqueTree();
         // object.buildExample();//
         // object.createCliqueTree();

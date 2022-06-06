@@ -135,14 +135,23 @@ public class PEO{
         }
     }
 
+    public int getNumberOfEdges(){
+        return (this.additionalEdges.size() + 1);
+    }
+
     public static void main(String args[]){
         Integer [] samples = new Integer[] { 18, 38, 58, 78, 98 };
         
         for(int sample : samples){
+            boolean flag = false;
             int max = -1;
             int min = 1;
-            boolean flag = false;
+            double avgMinCliqueSize = 0;
+            double avgMaxCliqueSize = 0;
+            double avgMeanCliqueSize = 0;
             double avg = 0;
+            double avgMaximalCliques = 0;
+            double avgEdges = 0;
             System.out.println("for " + (sample+2) + " nodes");
             for(int test=0; test<10; test++){
                 PEO object = new PEO();
@@ -163,11 +172,25 @@ public class PEO{
                 object.extractGraphToFile(fileName);
                 MergeClique mergeClique = new MergeClique(fileName+".csv");
                 mergeClique.createCliqueTree();
+                mergeClique.calculateCliqueSize();
+                avgMinCliqueSize += mergeClique.getMinimumCliqueSize();
+                avgMaxCliqueSize += mergeClique.getMaximumCliqueSize();
+                avgMeanCliqueSize += mergeClique.getAvarageCliqueSize();
+                avgMaximalCliques += mergeClique.getCliqueListSize();
+                avgEdges += object.getNumberOfEdges();
             }
+
             avg = avg / 10;
+            avgMaximalCliques = avgMaximalCliques/10;
+            avgEdges = avgEdges/10;
+            avgMinCliqueSize = avgMinCliqueSize/10;
+            avgMaxCliqueSize = avgMaxCliqueSize/10;
+            avgMeanCliqueSize = avgMeanCliqueSize/10;
             
-            System.out.println("min" + "\t" + "max" + "\t" + "avg");
-            System.out.println(min + "\t" + max + "\t" + avg);
+            System.out.println("MinClSize" + "\t" + "MaxClSize" + "\t" + "MeanClSize" + "\t" + "Edges" + "\t" + "Cliques" + "\t" + "min" + "\t" + "max" + "\t" + "avg");
+            System.out.println(avgMinCliqueSize + "\t" + avgMaxCliqueSize + "\t" + avgMeanCliqueSize + "\t" + avgEdges + "\t" + avgMaximalCliques + "\t" + min + "\t" + max + "\t" + avg);
+            // System.out.println("min" + "\t" + "max" + "\t" + "avg");
+            // System.out.println(min + "\t" + max + "\t" + avg);
             // System.out.println("max: " + max);
             // System.out.println("min: " + min);
             // System.out.println("avg: " + avg);
