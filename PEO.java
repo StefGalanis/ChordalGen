@@ -18,20 +18,18 @@ public class PEO{
         this.adjList = new ArrayList<ArrayList<Integer>>();
         this.additionalEdges = new ArrayList<ArrayList<Integer>>();
         ArrayList edge = new ArrayList();
-        Integer[] spam = new Integer[] { 0, 1, 2 };
+        Integer[] vetrexArray = new Integer[] { 0, 1};
         Integer[] adj0 = new Integer[] {1};
         adjList.add(new ArrayList(Arrays.asList(adj0)));
-        Integer[] adj1 = new Integer[] {2};
+        Integer[] adj1 = new Integer[] {0};
         adjList.add(new ArrayList(Arrays.asList(adj1)));
-        Integer[] adj2 = new Integer[] {0};
-        adjList.add(new ArrayList(Arrays.asList(adj2)));
-        this.vertexCounter = 3;
-        this.vertexList = new ArrayList(Arrays.asList(spam));
+        // Integer[] adj2 = new Integer[] {0};
+        // adjList.add(new ArrayList(Arrays.asList(adj2)));
+        this.vertexCounter = 2;
+        this.vertexList = new ArrayList(Arrays.asList(vetrexArray));
         this.minDegree = 0;
         this.maxDegree = -1;
         this.avgDegree = 0;
-        // System.out.println(adjList);
-        // System.out.println(adjList.get(0));
     }
 
     public void addVertex(){
@@ -42,7 +40,6 @@ public class PEO{
             int neighborName = neighbors.get(i);
             adjList.get(neighborName).add(vertexCounter);
         }
-        // System.out.println(adjList);
         for (int i=0; i<neighbors.size(); i++){
             int neighborName2 = neighbors.get(i);
             for (int j=0; j<neighbors.size(); j++){
@@ -64,12 +61,9 @@ public class PEO{
 
 
     public ArrayList<Integer> generateNeighbors(){
-        //Integer[] spam = new Integer[] { 0, 1, 2, 3, 4 };
-        //ArrayList<Integer> vertexList = new ArrayList(Arrays.asList(spam));
         Random rnd = new Random();
         ArrayList<Integer> neighbors = new ArrayList<Integer>();
         int numberOfNeighbors = rnd.nextInt(vertexList.size()-1)+1;
-        // System.out.println("number of neighbors \t" + numberOfNeighbors);
         Integer [] tempVertexList = vertexList.toArray(new Integer[vertexList.size()]);
         Integer arraySize = tempVertexList.length; 
         int currentPos = 0;
@@ -81,7 +75,6 @@ public class PEO{
             tempVertexList[currentPos] = swap;
             currentPos++;
         }
-        // System.out.println("neighbors \t" + neighbors.toString());
         return neighbors;
     }
 
@@ -120,8 +113,6 @@ public class PEO{
     public void extractGraphToFile(String fileName){
         try {
             FileWriter myWriter = new FileWriter(fileName + ".csv");
-            // myWriter.write("Files in Java might be tricky, but it is fun enough!");
-            // myWriter.close();
             System.out.println("Successfully wrote to the file.");
             for (ArrayList<Integer> list : this.adjList){
                 boolean flag = false;
@@ -145,35 +136,42 @@ public class PEO{
     }
 
     public static void main(String args[]){
-        Integer [] samples = new Integer[] { 20, 40, 60, 80, 100 };
-        int max = -1;
-        int min = 1;
-        boolean flag = false;
-        double avg = 0;
+        Integer [] samples = new Integer[] { 18, 38, 58, 78, 98 };
+        
         for(int sample : samples){
-            PEO object = new PEO();
-            int numberOfEdges = object.runTest(sample);
-            if (flag == false){
-                min = numberOfEdges;
-                flag = true;
+            int max = -1;
+            int min = 1;
+            boolean flag = false;
+            double avg = 0;
+            System.out.println("for " + (sample+2) + " nodes");
+            for(int test=0; test<10; test++){
+                PEO object = new PEO();
+                int numberOfEdges = object.runTest(sample);
+                if (flag == false){
+                    min = numberOfEdges;
+                    flag = true;
+                }
+                else if (min > numberOfEdges){
+                    min = numberOfEdges;
+                }
+                if (numberOfEdges > max){
+                    max = numberOfEdges;
+                }
+                avg = avg + numberOfEdges;
+                String fileName = "Graph" + "" + sample;
+                object.calcualteDegree();
+                object.extractGraphToFile(fileName);
+                MergeClique mergeClique = new MergeClique(fileName+".csv");
+                mergeClique.createCliqueTree();
             }
-            else if (min > numberOfEdges){
-                min = numberOfEdges;
-            }
-            if (numberOfEdges > max){
-                max = numberOfEdges;
-            }
-            avg = avg + numberOfEdges;
-            String fileName = "Graph" + "" + sample;
-            object.calcualteDegree();
-            // System.out.println();
-            object.extractGraphToFile(fileName);
+            avg = avg / 10;
+            
+            System.out.println("min" + "\t" + "max" + "\t" + "avg");
+            System.out.println(min + "\t" + max + "\t" + avg);
+            // System.out.println("max: " + max);
+            // System.out.println("min: " + min);
+            // System.out.println("avg: " + avg);
         }
-        avg = avg / samples.length;
-        System.out.println("max: " + max);
-        System.out.println("min: " + min);
-        System.out.println("avg: " + avg);
-        // object.addVertex();
         // object.printAdditionalEdges();
         
     }
