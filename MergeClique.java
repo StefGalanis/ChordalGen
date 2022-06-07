@@ -154,7 +154,7 @@ public class MergeClique{
             }
             int new_card = max;
             if (new_card <= prev_card){
-                System.out.println("uVertex:" + uVertex);
+                // System.out.println("uVertex:" + uVertex);
                 if (!clique.isEmpty()){
                     this.cliqueList.add(clique);
                     edgeCounter++;
@@ -179,8 +179,8 @@ public class MergeClique{
         }
         this.cliqueList.add(clique);
         // printCliqueTree();
-        System.out.println("Clique Tree number of edges:" + edgeCounter);
-        System.out.println("maximal cliques " + cliqueList.size());
+        // System.out.println("Clique Tree number of edges:" + edgeCounter);
+        // System.out.println("maximal cliques " + cliqueList.size());
         // System.out.println("L:" + list);
     }
 

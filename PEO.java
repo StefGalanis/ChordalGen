@@ -107,7 +107,7 @@ public class PEO{
             sum = sum + degree;
         }
         this.avgDegree = sum / this.vertexCounter;
-        System.out.println("minDegree: " + this.minDegree + " maxDegree: " + this.maxDegree + " avgDegree: " + this.avgDegree);
+        // System.out.println("minDegree: " + this.minDegree + " maxDegree: " + this.maxDegree + " avgDegree: " + this.avgDegree);
     }
 
     public void extractGraphToFile(String fileName){
@@ -139,6 +139,25 @@ public class PEO{
         return (this.additionalEdges.size() + 1);
     }
 
+    public int getminDegree(){
+        return this.minDegree;
+    }
+
+    public int getmaxDegree(){
+        return this.maxDegree;
+    }
+
+    public int getavgDegree(){
+        return this.avgDegree;
+    }
+
+    public double getEdgeDensity(){
+        int numberOfEdges = getNumberOfEdges();
+        int numberOfVertices = this.vertexList.size();
+        double edgeDensity = numberOfEdges / ((numberOfVertices*(numberOfVertices - 1))*0.5);
+        return edgeDensity;
+    }
+
     public static void main(String args[]){
         Integer [] samples = new Integer[] { 18, 38, 58, 78, 98 };
         
@@ -149,9 +168,13 @@ public class PEO{
             double avgMinCliqueSize = 0;
             double avgMaxCliqueSize = 0;
             double avgMeanCliqueSize = 0;
+            double avgMinDegree = 0;
+            double avgMaxDegree = 0;
+            double avgMeanDegree = 0;
             double avg = 0;
             double avgMaximalCliques = 0;
             double avgEdges = 0;
+            double avgEdgeDensity = 0;
             System.out.println("for " + (sample+2) + " nodes");
             for(int test=0; test<10; test++){
                 PEO object = new PEO();
@@ -177,7 +200,11 @@ public class PEO{
                 avgMaxCliqueSize += mergeClique.getMaximumCliqueSize();
                 avgMeanCliqueSize += mergeClique.getAvarageCliqueSize();
                 avgMaximalCliques += mergeClique.getCliqueListSize();
+                avgMinDegree += object.getminDegree();
+                avgMaxDegree += object.getmaxDegree();
+                avgMeanDegree += object.getavgDegree();
                 avgEdges += object.getNumberOfEdges();
+                avgEdgeDensity += object.getEdgeDensity();
             }
 
             avg = avg / 10;
@@ -186,9 +213,13 @@ public class PEO{
             avgMinCliqueSize = avgMinCliqueSize/10;
             avgMaxCliqueSize = avgMaxCliqueSize/10;
             avgMeanCliqueSize = avgMeanCliqueSize/10;
+            avgMinDegree = avgMinDegree/10;
+            avgMaxDegree = avgMaxDegree/10;
+            avgMeanDegree = avgMeanDegree/10;
+            avgEdgeDensity = avgEdgeDensity/10;
             
-            System.out.println("MinClSize" + "\t" + "MaxClSize" + "\t" + "MeanClSize" + "\t" + "Edges" + "\t" + "Cliques" + "\t" + "min" + "\t" + "max" + "\t" + "avg");
-            System.out.println(avgMinCliqueSize + "\t" + avgMaxCliqueSize + "\t" + avgMeanCliqueSize + "\t" + avgEdges + "\t" + avgMaximalCliques + "\t" + min + "\t" + max + "\t" + avg);
+            System.out.println("EdgeDesnity" + "\t" +"MinDegree" + "\t" + "MaxDegree" + "\t" + "MeanDegree" + "\t" + "MinClSize" + "\t" + "MaxClSize" + "\t" + "MeanClSize" + "\t" + "Edges" + "\t" + "Cliques" + "\t" + "min" + "\t" + "max" + "\t" + "avg");
+            System.out.println(avgEdgeDensity + "\t" + avgMinDegree + "\t" + avgMaxDegree + "\t" + avgMeanDegree + "\t" + avgMinCliqueSize + "\t" + avgMaxCliqueSize + "\t" + avgMeanCliqueSize + "\t" + avgEdges + "\t" + avgMaximalCliques + "\t" + min + "\t" + max + "\t" + avg);
             // System.out.println("min" + "\t" + "max" + "\t" + "avg");
             // System.out.println(min + "\t" + max + "\t" + avg);
             // System.out.println("max: " + max);
