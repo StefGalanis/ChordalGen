@@ -150,9 +150,7 @@ public class MaximumClique{
     public void extractGraphToFile(String fileName){
         try {
             FileWriter myWriter = new FileWriter(fileName + ".csv");
-            // myWriter.write("Files in Java might be tricky, but it is fun enough!");
-            // myWriter.close();
-            System.out.println("Successfully wrote to the file.");
+            // System.out.println("Successfully wrote to the file.");
             for (ArrayList<Integer> list : this.adjList){
                 boolean flag = false;
                 for (int item : list){
@@ -192,11 +190,34 @@ public class MaximumClique{
             sum = sum + degree;
         }
         this.avgDegree = sum / this.vertices.size();
-        System.out.println("minDegree: " + this.minDegree + " maxDegree: " + this.maxDegree + " avgDegree: " + this.avgDegree);
+        // System.out.println("minDegree: " + this.minDegree + " maxDegree: " + this.maxDegree + " avgDegree: " + this.avgDegree);
+    }
+
+    public int getminDegree(){
+        return this.minDegree;
+    }
+
+    public int getmaxDegree(){
+        return this.maxDegree;
+    }
+
+    public int getavgDegree(){
+        return this.avgDegree;
     }
 
     public int getMaximumCliqueSize(){
         return this.maximumCliqueSize;
+    }
+
+    public int getNumberOfEdges(){
+        return this.numberOfAddedEdges;
+    }
+
+    public double getEdgeDensity(){
+        int numberOfEdges = getNumberOfEdges();
+        int numberOfVertices = this.vertices.size();
+        double edgeDensity = numberOfEdges / ((numberOfVertices*(numberOfVertices - 1))*0.5);
+        return edgeDensity;
     }
 
     public void printAdjList(){
@@ -229,33 +250,69 @@ public class MaximumClique{
         Integer [] samples = new Integer[] { 20, 40, 60, 80, 100 };
         int max = -1;
         int min = 1;
-        boolean flag = false;
-        double avg = 0;
         for(int sample : samples){
-            MaximumClique object = new MaximumClique();
-            int numberOfEdges = object.runTest(sample);
-            if (flag == false){
-                min = numberOfEdges;
-                flag = true;
+            boolean flag = false;
+            double avg = 0;
+            double avgMinDegree = 0;
+            double avgMaxDegree = 0;
+            double avgMeanDegree = 0;
+            double avgNumberOfEdges = 0;
+            double avgEdgeDensity = 0;
+            double avgMinCliqueSize = 0;
+            double avgMaxCliqueSize = 0;
+            double avgMeanCliqueSize = 0;
+            double avgMaximalCliques = 0;
+            for(int test=0; test<10; test++){
+                MaximumClique object = new MaximumClique();
+                int numberOfEdges = object.runTest(sample);
+                if (flag == false){
+                    min = numberOfEdges;
+                    flag = true;
+                }
+                else if (min > numberOfEdges){
+                    min = numberOfEdges;
+                }
+                if (numberOfEdges > max){
+                    max = numberOfEdges;
+                }
+                avg = avg + numberOfEdges;
+
+                String fileName = "MaximumCliqueGraph" + "" + sample;
+                object.calcualteDegree();
+                object.extractGraphToFile(fileName);
+                MergeClique mergeClique = new MergeClique(fileName+".csv");
+                mergeClique.createCliqueTree();
+                mergeClique.calculateCliqueSize();
+                avgMinCliqueSize += mergeClique.getMinimumCliqueSize();
+                avgMaxCliqueSize += mergeClique.getMaximumCliqueSize();
+                avgMeanCliqueSize += mergeClique.getAvarageCliqueSize();
+                avgMaximalCliques += mergeClique.getCliqueListSize();
+                avgMinDegree += object.getminDegree();
+                avgMaxDegree += object.getmaxDegree();
+                avgMeanDegree += object.getavgDegree();
+                avgNumberOfEdges += object.getNumberOfEdges();
+                avgEdgeDensity += object.getEdgeDensity();
+                // System.out.println();
+                object.extractGraphToFile(fileName);
             }
-            else if (min > numberOfEdges){
-                min = numberOfEdges;
-            }
-            if (numberOfEdges > max){
-                max = numberOfEdges;
-            }
-            avg = avg + numberOfEdges;
-            // System.out.println();
-            // object.printAdjList();
-            String fileName = "MaximumCliqueGraph" + "" + sample;
-            object.calcualteDegree();
-            // System.out.println();
-            object.extractGraphToFile(fileName);
+            avgMinDegree = avgMinDegree/10;
+            avgMaxDegree = avgMaxDegree/10;
+            avgMeanDegree = avgMeanDegree/10;
+            avgNumberOfEdges = avgNumberOfEdges/10;
+            avgEdgeDensity = avgEdgeDensity/10;
+            avgMinCliqueSize = avgMinCliqueSize/10;
+            avgMaxCliqueSize = avgMaxCliqueSize/10;
+            avgMeanCliqueSize = avgMeanCliqueSize/10;
+            avgMaximalCliques = avgMaximalCliques/10;
+
+            System.out.println("avgMinDegree" + "\t" + "avgMaxDegree" + "\t" +"avgMeanDegree"+ "\t" +"Edges"+ "\t" +"EdgeDesnity"+ "\t" +"avgMeanCliqueSize"+ "\t" +"avgMaxCliqueSize"+ "\t" +"avgMinCliqueSize"+ "\t" +"avgNumberOfMaximalCliques");
+            System.out.println(avgMinDegree + "\t" + avgMaxDegree + "\t" +avgMeanDegree+ "\t" +avgNumberOfEdges + "\t" + avgEdgeDensity+ "\t" +avgMeanCliqueSize+ "\t" +avgMaxCliqueSize + "\t" + avgMinCliqueSize+ "\t" + avgMaximalCliques);
         }
-        avg = avg / samples.length;
-        System.out.println("max: " + max);
-        System.out.println("min: " + min);
-        System.out.println("avg: " + avg);
+        // avg = avg / samples.length;
+        
+        // System.out.println("max: " + max);
+        // System.out.println("min: " + min);
+        // System.out.println("avg: " + avg);
             // MaximumClique object = new MaximumClique();
             // for(int j=0; j<6; j++){
             //     object.addVertex();
