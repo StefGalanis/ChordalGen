@@ -28,7 +28,7 @@ public class MergeClique{
         this.rnd = new Random();
         this.adjList = new ArrayList<ArrayList<Integer>>();
         this.numberOfEdges = 0;
-        buildExample(0);
+        // buildExample(0);
         printEdges();
     }
 
@@ -76,54 +76,48 @@ public class MergeClique{
         return a;
     }
 
-    public void buildExample(int choice){
-        if (choice == 1){
-            Integer[] edge = new Integer[] {0,4};
-            this.edges.add(new ArrayList(Arrays.asList(edge)));
-            edge = new Integer[] {0,6};
-            this.edges.add(new ArrayList(Arrays.asList(edge)));
-            edge = new Integer[] {4,5};
-            this.edges.add(new ArrayList(Arrays.asList(edge)));
-            edge = new Integer[] {4,6};
-            this.edges.add(new ArrayList(Arrays.asList(edge)));
-            edge = new Integer[] {5,6};
-            this.edges.add(new ArrayList(Arrays.asList(edge)));
-            edge = new Integer[] {3,5};
-            this.edges.add(new ArrayList(Arrays.asList(edge)));
-            edge = new Integer[] {3,6};
-            this.edges.add(new ArrayList(Arrays.asList(edge)));
-            edge = new Integer[] {1,5};
-            this.edges.add(new ArrayList(Arrays.asList(edge)));
-            edge = new Integer[] {2,5};
-            this.edges.add(new ArrayList(Arrays.asList(edge)));
-            edge = new Integer[] {1,2};
-            this.edges.add(new ArrayList(Arrays.asList(edge)));
-            Integer[] spam = new Integer[] { 0, 1, 2, 3, 4, 5, 6 };
-            this.vertices = new ArrayList(Arrays.asList(spam));
-            this.numberOfVertices = 7;
+    public void buildExample(int nubmerOfNodes){
+        
+        for (int i=0; i<nubmerOfNodes; i++){
+            ArrayList<Integer> tempAdjList = new ArrayList<Integer>();
+            if ( i == 0 ){
+                this.adjList.add(tempAdjList);
+                this.vertices.add(this.numberOfVertices);
+                this.numberOfVertices++;
+            }
+            else{
+                this.vertices.add(this.numberOfVertices);
+                tempAdjList.add(this.numberOfVertices-1);
+                this.adjList.add(tempAdjList);
+                this.adjList.get(this.numberOfVertices-1).add(this.numberOfVertices);
+                this.numberOfEdges++;
+                this.numberOfVertices++;
+            }
         }
-        else{
-            Integer[] spam = new Integer[] { 0, 1, 2, 3, 4, 5, 6 };
-            Integer[] adj0 = new Integer[] {4,6};
-            this.adjList.add(new ArrayList(Arrays.asList(adj0)));
-            Integer[] adj1 = new Integer[] {2,5};
-            this.adjList.add(new ArrayList(Arrays.asList(adj1)));
-            Integer[] adj2 = new Integer[] {1,5};
-            this.adjList.add(new ArrayList(Arrays.asList(adj2)));
-            Integer[] adj3 = new Integer[] {5,6};
-            this.adjList.add(new ArrayList(Arrays.asList(adj3)));
-            Integer[] adj4 = new Integer[] {0,5,6};
-            this.adjList.add(new ArrayList(Arrays.asList(adj4)));
-            Integer[] adj5 = new Integer[] {1,2,3,4,6};
-            this.adjList.add(new ArrayList(Arrays.asList(adj5)));
-            Integer[] adj6 = new Integer[] {0,3,4,5};
-            this.adjList.add(new ArrayList(Arrays.asList(adj6)));
-            this.numberOfVertices = 7;
-            this.numberOfEdges = 10;
-            // this.edgeCounter = 10;
-            this.vertices = new ArrayList(Arrays.asList(spam));
-            printAdjList();
-        }
+        printAdjList();
+    }
+
+    public void buildExample(){
+        Integer[] vetrexArray = new Integer[] { 0, 1, 2, 3, 4, 5, 6 };
+        Integer[] adj0 = new Integer[] {4,6};
+        this.adjList.add(new ArrayList(Arrays.asList(adj0)));
+        Integer[] adj1 = new Integer[] {2,5};
+        this.adjList.add(new ArrayList(Arrays.asList(adj1)));
+        Integer[] adj2 = new Integer[] {1,5};
+        this.adjList.add(new ArrayList(Arrays.asList(adj2)));
+        Integer[] adj3 = new Integer[] {5,6};
+        this.adjList.add(new ArrayList(Arrays.asList(adj3)));
+        Integer[] adj4 = new Integer[] {0,5,6};
+        this.adjList.add(new ArrayList(Arrays.asList(adj4)));
+        Integer[] adj5 = new Integer[] {1,2,3,4,6};
+        this.adjList.add(new ArrayList(Arrays.asList(adj5)));
+        Integer[] adj6 = new Integer[] {0,3,4,5};
+        this.adjList.add(new ArrayList(Arrays.asList(adj6)));
+        this.numberOfVertices = 7;
+        this.numberOfEdges = 10;
+        // this.edgeCounter = 10;
+        this.vertices = new ArrayList(Arrays.asList(vetrexArray));
+        printAdjList();
     }
 
     public void printAdjList(){
@@ -237,10 +231,16 @@ public class MergeClique{
 
     public void mergeCliques(){
         double edgeDensity = this.numberOfEdges / ((this.numberOfVertices*(this.numberOfVertices - 1))*0.5);
-        System.out.println(edgeDensity);
+        // System.out.println(edgeDensity);
         // double desiredEdgeDensity;
-        if (cliqueTreeEdges.size()>1){
-            int randomEdgeIndex = rnd.nextInt(this.cliqueTreeEdges.size()-1);
+        if (cliqueTreeEdges.size()>=1){
+            int randomEdgeIndex;
+            if(cliqueTreeEdges.size()>1){
+                randomEdgeIndex = rnd.nextInt(this.cliqueTreeEdges.size()-1);
+            }
+            else{
+                randomEdgeIndex = 0;
+            }
             ArrayList<Integer> randomEdge = this.cliqueTreeEdges.get(randomEdgeIndex);
             int edge0 = randomEdge.get(0);
             int edge1 = randomEdge.get(1);
@@ -250,10 +250,10 @@ public class MergeClique{
                 ArrayList<Integer> adjList0 = this.adjList.get(item0);
                 for(int item1 : clique1){
                     if (!adjList0.contains(item1) && item0 != item1){
-                        adjList0.add(item1);
+                        this.adjList.get(item0).add(item1);
                         this.adjList.get(item1).add(item0);
-                        Integer [] edge = new Integer[] {item1,item0};
-                        this.edges.add(new ArrayList(Arrays.asList(edge)));
+                        // Integer [] edge = new Integer[] {item1,item0};
+                        // this.edges.add(new ArrayList(Arrays.asList(edge)));
                         this.numberOfEdges++;
                     }
                 }
@@ -267,6 +267,7 @@ public class MergeClique{
         else{
             System.out.println("Graph is fully connected");
         }
+        System.out.println(edgeDensity);
     }
 
 
@@ -316,16 +317,41 @@ public class MergeClique{
         return this.cliqueList.size();
     }
 
+    public int getNumberOfEdges(){
+        return this.numberOfEdges;
+    }
+
+    public int getNumberOfVertices(){
+        return this.numberOfVertices;
+    }
 
     public static void main(String args[]){
         MergeClique object = new MergeClique();
-        object.createCliqueTree();
-        // object.buildExample();//
         // object.createCliqueTree();
+        object.buildExample(10);//
+        object.createCliqueTree();
+        object.printCliqueTree();
+        System.out.println(object.getNumberOfEdges());
+        object.mergeCliques();
+        object.printCliqueTree();
+        object.printAdjList();
+        System.out.println(object.getNumberOfEdges());
+        object.mergeCliques();
+        object.printCliqueTree();
+        object.printAdjList();
+        System.out.println(object.getNumberOfEdges());
+        object.mergeCliques();
+        object.printCliqueTree();
+        object.printAdjList();
+        System.out.println(object.getNumberOfEdges());
+        object.mergeCliques();
+        object.printCliqueTree();
+        object.printAdjList();
+        System.out.println(object.getNumberOfEdges());
         // object.mergeCliques();
-        // object.printCliqueTree();
-        // object.printAdjList();
         // object.mergeCliques();
+        // object.mergeCliques();
+        // System.out.println(object.getNumberOfVertices());
         // object.printCliqueTree();
         // object.printAdjList();
         // object.printEdges();
