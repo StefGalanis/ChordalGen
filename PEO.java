@@ -11,7 +11,7 @@ public class PEO{
     private ArrayList<ArrayList<Integer> > additionalEdges;
     private int minDegree;
     private int maxDegree;
-    private int avgDegree;
+    private double avgDegree;
 
     
     public PEO(){
@@ -147,7 +147,7 @@ public class PEO{
         return this.maxDegree;
     }
 
-    public int getavgDegree(){
+    public double getavgDegree(){
         return this.avgDegree;
     }
 
