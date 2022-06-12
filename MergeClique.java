@@ -3,7 +3,8 @@ import java.util.Arrays;
 import java.util.Random;
 import java.io.File;  
 import java.io.FileNotFoundException;  
-import java.util.Scanner; 
+import java.util.Scanner;
+import java.lang.Math;
 
 public class MergeClique{
 
@@ -18,6 +19,10 @@ public class MergeClique{
     private int minCliqueSize;
     private int maxCliqueSize;
     private double avgCliqueSize;
+    private int minDegree;
+    private int maxDegree;
+    private double avgDegree;
+    private ArrayList<Integer> cliquesToRemove;
 
     public MergeClique(){
         this.edges = new ArrayList<ArrayList<Integer>>();
@@ -28,6 +33,10 @@ public class MergeClique{
         this.rnd = new Random();
         this.adjList = new ArrayList<ArrayList<Integer>>();
         this.numberOfEdges = 0;
+        this.minDegree = 0;
+        this.maxDegree = -1;
+        this.avgDegree = 0;
+        this.cliquesToRemove = new ArrayList<Integer>();
         // buildExample(0);
         printEdges();
     }
@@ -40,6 +49,7 @@ public class MergeClique{
         this.numberOfVertices = 0;
         this.rnd = new Random();
         this.adjList = new ArrayList<ArrayList<Integer>>();
+        this.cliquesToRemove = new ArrayList<Integer>();
         this.numberOfEdges = 0;
         this.minCliqueSize = -1;
         this.maxCliqueSize = -1;
@@ -117,7 +127,7 @@ public class MergeClique{
         this.numberOfEdges = 10;
         // this.edgeCounter = 10;
         this.vertices = new ArrayList(Arrays.asList(vetrexArray));
-        printAdjList();
+        // printAdjList();
     }
 
     public void printAdjList(){
@@ -232,42 +242,46 @@ public class MergeClique{
     public void mergeCliques(){
         double edgeDensity = this.numberOfEdges / ((this.numberOfVertices*(this.numberOfVertices - 1))*0.5);
         // System.out.println(edgeDensity);
-        // double desiredEdgeDensity;
-        if (cliqueTreeEdges.size()>=1){
-            int randomEdgeIndex;
-            if(cliqueTreeEdges.size()>1){
-                randomEdgeIndex = rnd.nextInt(this.cliqueTreeEdges.size()-1);
-            }
-            else{
-                randomEdgeIndex = 0;
-            }
-            ArrayList<Integer> randomEdge = this.cliqueTreeEdges.get(randomEdgeIndex);
-            int edge0 = randomEdge.get(0);
-            int edge1 = randomEdge.get(1);
-            ArrayList<Integer> clique0 = this.cliqueList.get(edge0);
-            ArrayList<Integer> clique1 = this.cliqueList.get(edge1);
-            for (int item0 : clique0){
-                ArrayList<Integer> adjList0 = this.adjList.get(item0);
-                for(int item1 : clique1){
-                    if (!adjList0.contains(item1) && item0 != item1){
-                        this.adjList.get(item0).add(item1);
-                        this.adjList.get(item1).add(item0);
-                        // Integer [] edge = new Integer[] {item1,item0};
-                        // this.edges.add(new ArrayList(Arrays.asList(edge)));
-                        this.numberOfEdges++;
+        double desiredEdgeDensity = (this.numberOfVertices*Math.log(this.numberOfVertices))/((this.numberOfVertices*(this.numberOfVertices - 1))*0.5);
+        System.out.println("desiredEdgeDensity :" + desiredEdgeDensity);
+        while(edgeDensity<desiredEdgeDensity){
+            if (cliqueTreeEdges.size()>=1){
+                int randomEdgeIndex;
+                if(cliqueTreeEdges.size()>1){
+                    randomEdgeIndex = rnd.nextInt(this.cliqueTreeEdges.size()-1);
+                }
+                else{
+                    randomEdgeIndex = 0;
+                }
+                ArrayList<Integer> randomEdge = this.cliqueTreeEdges.get(randomEdgeIndex);
+                int edge0 = randomEdge.get(0);
+                int edge1 = randomEdge.get(1);
+                ArrayList<Integer> clique0 = this.cliqueList.get(edge0);
+                ArrayList<Integer> clique1 = this.cliqueList.get(edge1);
+                for (int item0 : clique0){
+                    ArrayList<Integer> adjList0 = this.adjList.get(item0);
+                    for(int item1 : clique1){
+                        if (!adjList0.contains(item1) && item0 != item1){
+                            this.adjList.get(item0).add(item1);
+                            this.adjList.get(item1).add(item0);
+                            // Integer [] edge = new Integer[] {item1,item0};
+                            // this.edges.add(new ArrayList(Arrays.asList(edge)));
+                            this.numberOfEdges++;
+                        }
                     }
                 }
+                this.cliqueList.get(edge1).removeAll(clique0);
+                this.cliqueList.get(edge1).addAll(clique0);
+                this.cliqueList.set(edge0,this.cliqueList.get(edge1));
+                this.cliquesToRemove.add(edge0);
+                this.cliqueTreeEdges.remove(randomEdgeIndex);
             }
-            this.cliqueList.get(edge1).removeAll(clique0);
-            this.cliqueList.get(edge1).addAll(clique0);
-            this.cliqueList.set(edge0,this.cliqueList.get(edge1));
-            
-            this.cliqueTreeEdges.remove(randomEdgeIndex);
+            else{
+                System.out.println("Graph is fully connected");
+            }
+            edgeDensity = this.numberOfEdges / ((this.numberOfVertices*(this.numberOfVertices - 1))*0.5);
+            // System.out.println(edgeDensity);
         }
-        else{
-            System.out.println("Graph is fully connected");
-        }
-        System.out.println(edgeDensity);
     }
 
 
@@ -277,20 +291,27 @@ public class MergeClique{
         int min = 1;
         boolean flag = false;
         double avg = 0;
-        for (ArrayList<Integer> list : this.cliqueList){
-            if (flag == false){
-                min = list.size();
-                flag = true;
+        // for (int cliqueIndex : this.cliquesToRemove){
+        //     this.cliqueList.remove(cliqueIndex);
+        //     System.out.println(this.cliqueList);
+        // }
+        for (int i=0; i<this.cliqueList.size(); i++){
+            if(!this.cliquesToRemove.contains(i)){
+                ArrayList<Integer> list = this.cliqueList.get(i);
+                if (flag == false){
+                    min = list.size();
+                    flag = true;
+                }
+                else if (min > list.size()){
+                    min = list.size();
+                }
+                if (list.size() > max){
+                    max = list.size();
+                }
+                avg += list.size();
             }
-            else if (min > list.size()){
-                min = list.size();
-            }
-            if (list.size() > max){
-                max = list.size();
-            }
-            avg += list.size();
         }
-        avg = avg / cliqueList.size();
+        avg = avg / (cliqueList.size() - this.cliquesToRemove.size());
         this.minCliqueSize = min;
         this.maxCliqueSize = max;
         this.avgCliqueSize = avg;
@@ -325,35 +346,99 @@ public class MergeClique{
         return this.numberOfVertices;
     }
 
+    public int getNumberOfCliquesToRemove(){
+        return this.cliquesToRemove.size();
+    }
+
+    public void calcualteDegree(){
+        boolean flag = false;
+        int sum = 0;
+        // System.out.println(this.adjList);
+        for (ArrayList<Integer> List : this.adjList){
+            int degree = List.size();
+            if (flag == false){
+                this.minDegree = degree;
+                flag = true;
+            }
+            if (degree > this.maxDegree){
+                this.maxDegree = degree;
+            }
+            if(degree < this.minDegree){
+                this.minDegree = degree;
+            }
+            sum = sum + degree;
+        }
+        this.avgDegree = sum / this.numberOfVertices;
+        // System.out.println("minDegree: " + this.minDegree + " maxDegree: " + this.maxDegree + " avgDegree: " + this.avgDegree);
+    }
+
+    public int getminDegree(){
+        return this.minDegree;
+    }
+
+    public int getmaxDegree(){
+        return this.maxDegree;
+    }
+
+    public double getavgDegree(){
+        return this.avgDegree;
+    }
+
+    public double getEdgeDensity(){
+        double edgeDensity = this.numberOfEdges / ((this.numberOfVertices*(this.numberOfVertices - 1))*0.5);
+        return edgeDensity;
+    }
+
     public static void main(String args[]){
-        MergeClique object = new MergeClique();
+        // MergeClique object = new MergeClique();
         // object.createCliqueTree();
-        object.buildExample(10);//
-        object.createCliqueTree();
-        object.printCliqueTree();
-        System.out.println(object.getNumberOfEdges());
-        object.mergeCliques();
-        object.printCliqueTree();
-        object.printAdjList();
-        System.out.println(object.getNumberOfEdges());
-        object.mergeCliques();
-        object.printCliqueTree();
-        object.printAdjList();
-        System.out.println(object.getNumberOfEdges());
-        object.mergeCliques();
-        object.printCliqueTree();
-        object.printAdjList();
-        System.out.println(object.getNumberOfEdges());
-        object.mergeCliques();
-        object.printCliqueTree();
-        object.printAdjList();
-        System.out.println(object.getNumberOfEdges());
-        // object.mergeCliques();
-        // object.mergeCliques();
-        // object.mergeCliques();
-        // System.out.println(object.getNumberOfVertices());
-        // object.printCliqueTree();
-        // object.printAdjList();
-        // object.printEdges();
+        Integer [] samples = new Integer[] { 20, 40, 60, 80, 100 };
+        for (int sample : samples){
+            double avgMinCliqueSize = 0;
+            double avgMaxCliqueSize = 0;
+            double avgMeanCliqueSize = 0;
+            double avgMinDegree = 0;
+            double avgMaxDegree = 0;
+            double avgMeanDegree = 0;
+            // double avg = 0;
+            double avgMaximalCliques = 0;
+            double avgEdges = 0;
+            double avgEdgeDensity = 0;
+            for(int test=0; test<10; test++){
+                MergeClique object = new MergeClique();
+                object.buildExample(sample);
+                object.createCliqueTree();
+                object.mergeCliques();
+                object.calcualteDegree();
+                object.calculateCliqueSize();
+                avgMinDegree += object.getminDegree();
+                avgMaxDegree += object.getmaxDegree();
+                avgMeanDegree += object.getavgDegree();
+                avgMinCliqueSize += object.getMinimumCliqueSize();
+                avgMaxCliqueSize += object.getMaximumCliqueSize();
+                avgMeanCliqueSize += object.getAvarageCliqueSize();
+                avgMaximalCliques += object.getCliqueListSize() - object.getNumberOfCliquesToRemove();
+                avgEdges += object.getNumberOfEdges();
+                avgEdgeDensity += object.getEdgeDensity();
+            }
+            // avg = avg / 10;
+            avgMaximalCliques = avgMaximalCliques/10;
+            avgEdges = avgEdges/10;
+            avgMinCliqueSize = avgMinCliqueSize/10;
+            avgMaxCliqueSize = avgMaxCliqueSize/10;
+            avgMeanCliqueSize = avgMeanCliqueSize/10;
+            avgMinDegree = avgMinDegree/10;
+            avgMaxDegree = avgMaxDegree/10;
+            avgMeanDegree = avgMeanDegree/10;
+            avgEdgeDensity = avgEdgeDensity/10;
+
+            System.out.println("Statistics for graph with " + sample + " nodes");
+            System.out.println("EdgeDesnity" + "\t" +"MinDegree" + "\t" + "MaxDegree" + "\t" + "MeanDegree" + "\t" + "MinClSize" + "\t" + "MaxClSize" + "\t" + "MeanClSize" + "\t" + "Edges" + "\t" + "Cliques" );
+            System.out.println(avgEdgeDensity + "\t" + avgMinDegree + "\t" + avgMaxDegree + "\t" + avgMeanDegree + "\t" + avgMinCliqueSize + "\t" + avgMaxCliqueSize + "\t" + avgMeanCliqueSize + "\t" + avgEdges + "\t" + avgMaximalCliques );
+            
+            // object.printCliqueTree();
+            // System.out.println("edges before: " + object.getNumberOfEdges());
+            // System.out.println("edges after: " + object.getNumberOfEdges());
+        }
     }
 }
