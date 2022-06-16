@@ -23,8 +23,6 @@ public class PEO{
         adjList.add(new ArrayList(Arrays.asList(adj0)));
         Integer[] adj1 = new Integer[] {0};
         adjList.add(new ArrayList(Arrays.asList(adj1)));
-        // Integer[] adj2 = new Integer[] {0};
-        // adjList.add(new ArrayList(Arrays.asList(adj2)));
         this.vertexCounter = 2;
         this.vertexList = new ArrayList(Arrays.asList(vetrexArray));
         this.minDegree = 0;
@@ -113,7 +111,6 @@ public class PEO{
     public void extractGraphToFile(String fileName){
         try {
             FileWriter myWriter = new FileWriter(fileName + ".csv");
-            System.out.println("Successfully wrote to the file.");
             for (ArrayList<Integer> list : this.adjList){
                 boolean flag = false;
                 for (int item : list){
@@ -175,7 +172,7 @@ public class PEO{
             double avgMaximalCliques = 0;
             double avgEdges = 0;
             double avgEdgeDensity = 0;
-            System.out.println("for " + (sample+2) + " nodes");
+            System.out.println("Statistic values for graph with " + (sample+2) + " nodes");
             for(int test=0; test<10; test++){
                 PEO object = new PEO();
                 int numberOfEdges = object.runTest(sample);
@@ -220,13 +217,7 @@ public class PEO{
             
             System.out.println("EdgeDesnity" + "\t" +"MinDegree" + "\t" + "MaxDegree" + "\t" + "MeanDegree" + "\t" + "MinClSize" + "\t" + "MaxClSize" + "\t" + "MeanClSize" + "\t" + "Edges" + "\t" + "Cliques" + "\t" + "min" + "\t" + "max" + "\t" + "avg");
             System.out.println(avgEdgeDensity + "\t" + avgMinDegree + "\t" + avgMaxDegree + "\t" + avgMeanDegree + "\t" + avgMinCliqueSize + "\t" + avgMaxCliqueSize + "\t" + avgMeanCliqueSize + "\t" + avgEdges + "\t" + avgMaximalCliques + "\t" + min + "\t" + max + "\t" + avg);
-            // System.out.println("min" + "\t" + "max" + "\t" + "avg");
-            // System.out.println(min + "\t" + max + "\t" + avg);
-            // System.out.println("max: " + max);
-            // System.out.println("min: " + min);
-            // System.out.println("avg: " + avg);
         }
-        // object.printAdditionalEdges();
         
     }
 }

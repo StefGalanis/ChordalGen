@@ -104,7 +104,7 @@ public class MergeClique{
                 this.numberOfVertices++;
             }
         }
-        printAdjList();
+        // printAdjList();
     }
 
     public void buildExample(){
@@ -239,12 +239,24 @@ public class MergeClique{
     }
 
 
-    public void mergeCliques(){
+    public void mergeCliques(String edgeDensityLimit){
         double edgeDensity = this.numberOfEdges / ((this.numberOfVertices*(this.numberOfVertices - 1))*0.5);
         // System.out.println(edgeDensity);
-        double desiredEdgeDensity = (this.numberOfVertices*Math.log(this.numberOfVertices))/((this.numberOfVertices*(this.numberOfVertices - 1))*0.5);
-        System.out.println("desiredEdgeDensity :" + desiredEdgeDensity);
+        double desiredEdgeDensity = 0;
+        if (edgeDensityLimit.equals("n*log(n)")){
+            desiredEdgeDensity = (this.numberOfVertices*Math.log(this.numberOfVertices))/((this.numberOfVertices*(this.numberOfVertices - 1))*0.5);
+        }
+        else if(edgeDensityLimit.equals("n*sqrt(n)")){
+            desiredEdgeDensity = (this.numberOfVertices*Math.sqrt(this.numberOfVertices))/((this.numberOfVertices*(this.numberOfVertices - 1))*0.5);
+        }
+        else{
+            System.exit(1);
+        }
+        // System.out.println("desiredEdgeDensity :" + desiredEdgeDensity);
         while(edgeDensity<desiredEdgeDensity){
+            if (desiredEdgeDensity>1){
+                System.exit(1);
+            }
             if (cliqueTreeEdges.size()>=1){
                 int randomEdgeIndex;
                 if(cliqueTreeEdges.size()>1){
@@ -264,23 +276,28 @@ public class MergeClique{
                         if (!adjList0.contains(item1) && item0 != item1){
                             this.adjList.get(item0).add(item1);
                             this.adjList.get(item1).add(item0);
-                            // Integer [] edge = new Integer[] {item1,item0};
-                            // this.edges.add(new ArrayList(Arrays.asList(edge)));
                             this.numberOfEdges++;
                         }
                     }
                 }
                 this.cliqueList.get(edge1).removeAll(clique0);
                 this.cliqueList.get(edge1).addAll(clique0);
-                this.cliqueList.set(edge0,this.cliqueList.get(edge1));
+                for (ArrayList<Integer> edge : this.cliqueTreeEdges){
+                    if (edge.contains(edge0)){
+                        int indexOfNodeToReplace = edge.indexOf(edge0);
+                        edge.set(indexOfNodeToReplace,edge1);
+                    }
+                }
                 this.cliquesToRemove.add(edge0);
                 this.cliqueTreeEdges.remove(randomEdgeIndex);
+                printCliqueTree();
             }
             else{
-                System.out.println("Graph is fully connected");
+                System.out.println("Graph is fully connected with edge density " + edgeDensity );
+                printAdjList();
+                break;
             }
             edgeDensity = this.numberOfEdges / ((this.numberOfVertices*(this.numberOfVertices - 1))*0.5);
-            // System.out.println(edgeDensity);
         }
     }
 
@@ -390,55 +407,82 @@ public class MergeClique{
     }
 
     public static void main(String args[]){
-        // MergeClique object = new MergeClique();
-        // object.createCliqueTree();
+        MergeClique example = new MergeClique();
+        example.buildExample(5);
+        example.createCliqueTree();
+        example.printCliqueTree();
+        example.mergeCliques("n*log(n)");
+        example.printCliqueTree();
+        System.out.println(example.getEdgeDensity());
+        System.exit(1);
         Integer [] samples = new Integer[] { 20, 40, 60, 80, 100 };
-        for (int sample : samples){
-            double avgMinCliqueSize = 0;
-            double avgMaxCliqueSize = 0;
-            double avgMeanCliqueSize = 0;
-            double avgMinDegree = 0;
-            double avgMaxDegree = 0;
-            double avgMeanDegree = 0;
-            // double avg = 0;
-            double avgMaximalCliques = 0;
-            double avgEdges = 0;
-            double avgEdgeDensity = 0;
-            for(int test=0; test<10; test++){
-                MergeClique object = new MergeClique();
-                object.buildExample(sample);
-                object.createCliqueTree();
-                object.mergeCliques();
-                object.calcualteDegree();
-                object.calculateCliqueSize();
-                avgMinDegree += object.getminDegree();
-                avgMaxDegree += object.getmaxDegree();
-                avgMeanDegree += object.getavgDegree();
-                avgMinCliqueSize += object.getMinimumCliqueSize();
-                avgMaxCliqueSize += object.getMaximumCliqueSize();
-                avgMeanCliqueSize += object.getAvarageCliqueSize();
-                avgMaximalCliques += object.getCliqueListSize() - object.getNumberOfCliquesToRemove();
-                avgEdges += object.getNumberOfEdges();
-                avgEdgeDensity += object.getEdgeDensity();
-            }
-            // avg = avg / 10;
-            avgMaximalCliques = avgMaximalCliques/10;
-            avgEdges = avgEdges/10;
-            avgMinCliqueSize = avgMinCliqueSize/10;
-            avgMaxCliqueSize = avgMaxCliqueSize/10;
-            avgMeanCliqueSize = avgMeanCliqueSize/10;
-            avgMinDegree = avgMinDegree/10;
-            avgMaxDegree = avgMaxDegree/10;
-            avgMeanDegree = avgMeanDegree/10;
-            avgEdgeDensity = avgEdgeDensity/10;
+        String [] edgeDensities = new String[] {"n*log(n)","n*sqrt(n)"};
+        for (String edgeDensity : edgeDensities){
+            System.out.println("Statistics for " + edgeDensity);
+            for (int sample : samples){
+                boolean flag = false;
+                int max = -1;
+                int min = 1;
+                double avg = 0;
+                double avgMinCliqueSize = 0;
+                double avgMaxCliqueSize = 0;
+                double avgMeanCliqueSize = 0;
+                double avgMinDegree = 0;
+                double avgMaxDegree = 0;
+                double avgMeanDegree = 0;
+                // double avg = 0;
+                double avgMaximalCliques = 0;
+                double avgEdges = 0;
+                double avgEdgeDensity = 0;
+                for(int test=0; test<10; test++){
+                    MergeClique object = new MergeClique();
+                    object.buildExample(sample);
+                    object.createCliqueTree();
+                    object.mergeCliques(edgeDensity);
+                    object.calcualteDegree();
+                    object.calculateCliqueSize();
+                    int numberOfEdges = object.getNumberOfEdges();
+                    if (flag == false){
+                        min = numberOfEdges;
+                        flag = true;
+                    }
+                    else if (min > numberOfEdges){
+                        min = numberOfEdges;
+                    }
+                    if (numberOfEdges > max){
+                        max = numberOfEdges;
+                    }
+                    avg = avg + numberOfEdges;
+                    avgMinDegree += object.getminDegree();
+                    avgMaxDegree += object.getmaxDegree();
+                    avgMeanDegree += object.getavgDegree();
+                    avgMinCliqueSize += object.getMinimumCliqueSize();
+                    avgMaxCliqueSize += object.getMaximumCliqueSize();
+                    avgMeanCliqueSize += object.getAvarageCliqueSize();
+                    avgMaximalCliques += object.getCliqueListSize() - object.getNumberOfCliquesToRemove();
+                    avgEdges += object.getNumberOfEdges();
+                    avgEdgeDensity += object.getEdgeDensity();
+                }
+                // avg = avg / 10;
+                avgMaximalCliques = avgMaximalCliques/10;
+                avgEdges = avgEdges/10;
+                avgMinCliqueSize = avgMinCliqueSize/10;
+                avgMaxCliqueSize = avgMaxCliqueSize/10;
+                avgMeanCliqueSize = avgMeanCliqueSize/10;
+                avgMinDegree = avgMinDegree/10;
+                avgMaxDegree = avgMaxDegree/10;
+                avgMeanDegree = avgMeanDegree/10;
+                avgEdgeDensity = avgEdgeDensity/10;
+                avg = avg/10;
 
-            System.out.println("Statistics for graph with " + sample + " nodes");
-            System.out.println("EdgeDesnity" + "\t" +"MinDegree" + "\t" + "MaxDegree" + "\t" + "MeanDegree" + "\t" + "MinClSize" + "\t" + "MaxClSize" + "\t" + "MeanClSize" + "\t" + "Edges" + "\t" + "Cliques" );
-            System.out.println(avgEdgeDensity + "\t" + avgMinDegree + "\t" + avgMaxDegree + "\t" + avgMeanDegree + "\t" + avgMinCliqueSize + "\t" + avgMaxCliqueSize + "\t" + avgMeanCliqueSize + "\t" + avgEdges + "\t" + avgMaximalCliques );
-            
-            // object.printCliqueTree();
-            // System.out.println("edges before: " + object.getNumberOfEdges());
-            // System.out.println("edges after: " + object.getNumberOfEdges());
+                System.out.println("Statistics for graph with " + sample + " nodes");
+                System.out.println("EdgeDesnity" + "\t" +"MinDegree" + "\t" + "MaxDegree" + "\t" + "MeanDegree" + "\t" + "MinClSize" + "\t" + "MaxClSize" + "\t" + "MeanClSize" + "\t" + "Edges" + "\t" + "Cliques" + "\t" + "min" + "\t" + "max" + "\t" + "avg");
+                System.out.println(avgEdgeDensity + "\t" + avgMinDegree + "\t" + avgMaxDegree + "\t" + avgMeanDegree + "\t" + avgMinCliqueSize + "\t" + avgMaxCliqueSize + "\t" + avgMeanCliqueSize + "\t" + avgEdges + "\t" + avgMaximalCliques + "\t" + min + "\t" + max + "\t" + avg);
+                
+                // object.printCliqueTree();
+                // System.out.println("edges before: " + object.getNumberOfEdges());
+                // System.out.println("edges after: " + object.getNumberOfEdges());
+            }
         }
     }
 }

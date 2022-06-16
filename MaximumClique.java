@@ -101,24 +101,19 @@ public class MaximumClique{
         }
         else{
             this.vertices.add(numberOfVertices);
-            // this.rnd = new Random();
             int maximumCliquePosition = this.rnd.nextInt(this.maximumKliqueList.size());
             ArrayList<Integer> newMaximumClique = new ArrayList<Integer>();
             newMaximumClique.add(numberOfVertices);
             
             ArrayList<Integer> maximumClique = this.maximumKliqueList.get(maximumCliquePosition);
             Integer [] maximumCliqueToArray = maximumClique.toArray(new Integer[maximumClique.size()]);
-            // System.out.println(maximumClique.size());
             int sizeOfSubset = 0;
             if(maximumClique.size() <= 2){
                 sizeOfSubset = maximumClique.size();
             }
             else{
-                // System.out.println("Maximum Clique size: " + maximumClique.size());
                 int randomNumber = this.rnd.nextInt(maximumClique.size()-1);
-                // System.out.println("randomNumber: " + randomNumber);
                 sizeOfSubset = randomNumber + 2;
-                // System.out.println("randomSubset size : " + sizeOfSubset);
             }
             ArrayList<Integer> newVertexAdjList = new ArrayList<Integer>();
             for (int i=0; i<sizeOfSubset; i++){
@@ -134,15 +129,14 @@ public class MaximumClique{
                 newMaximumClique.add(randomVertex);
             }
             this.adjList.add(newVertexAdjList);
-            if ((sizeOfSubset+1) > maximumCliqueSize){
-                maximumCliqueSize = sizeOfSubset + 1;
+            if ((sizeOfSubset+1) > this.maximumCliqueSize){
+                this.maximumCliqueSize = sizeOfSubset + 1;
                 this.maximumKliqueList = new ArrayList<ArrayList<Integer>>();
                 this.maximumKliqueList.add(newMaximumClique);
             }
             else if ((sizeOfSubset+1) == maximumCliqueSize){
                 this.maximumKliqueList.add(newMaximumClique);
             }
-            // System.out.println("Maximum Clique List: " + maximumKliqueList);
             this.numberOfVertices += 1;
         }
     }
@@ -150,7 +144,6 @@ public class MaximumClique{
     public void extractGraphToFile(String fileName){
         try {
             FileWriter myWriter = new FileWriter(fileName + ".csv");
-            // System.out.println("Successfully wrote to the file.");
             for (ArrayList<Integer> list : this.adjList){
                 boolean flag = false;
                 for (int item : list){
@@ -248,10 +241,11 @@ public class MaximumClique{
 
     public static void main(String args[]){
         Integer [] samples = new Integer[] { 20, 40, 60, 80, 100 };
-        int max = -1;
-        int min = 1;
+
         for(int sample : samples){
             boolean flag = false;
+            int max = -1;
+            int min = 1;
             double avg = 0;
             double avgMinDegree = 0;
             double avgMaxDegree = 0;
@@ -292,7 +286,6 @@ public class MaximumClique{
                 avgMeanDegree += object.getavgDegree();
                 avgNumberOfEdges += object.getNumberOfEdges();
                 avgEdgeDensity += object.getEdgeDensity();
-                // System.out.println();
                 object.extractGraphToFile(fileName);
             }
             avgMinDegree = avgMinDegree/10;
@@ -304,26 +297,11 @@ public class MaximumClique{
             avgMaxCliqueSize = avgMaxCliqueSize/10;
             avgMeanCliqueSize = avgMeanCliqueSize/10;
             avgMaximalCliques = avgMaximalCliques/10;
+            avg = avg/10;
 
-            System.out.println("avgMinDegree" + "\t" + "avgMaxDegree" + "\t" +"avgMeanDegree"+ "\t" +"Edges"+ "\t" +"EdgeDesnity"+ "\t" +"avgMeanCliqueSize"+ "\t" +"avgMaxCliqueSize"+ "\t" +"avgMinCliqueSize"+ "\t" +"avgNumberOfMaximalCliques");
-            System.out.println(avgMinDegree + "\t" + avgMaxDegree + "\t" +avgMeanDegree+ "\t" +avgNumberOfEdges + "\t" + avgEdgeDensity+ "\t" +avgMeanCliqueSize+ "\t" +avgMaxCliqueSize + "\t" + avgMinCliqueSize+ "\t" + avgMaximalCliques);
+            System.out.println("Statistics for graph with " + sample + " nodes");
+            System.out.println("avgMinDegree" + "\t" + "avgMaxDegree" + "\t" +"avgMeanDegree"+ "\t" +"Edges"+ "\t" +"EdgeDesnity"+ "\t" +"avgMeanCliqueSize"+ "\t" +"avgMaxCliqueSize"+ "\t" +"avgMinCliqueSize"+ "\t" + "avgNumberOfMaximalCliques" + "\t" + "min" + "\t" + "max" + "\t" + "avg");
+            System.out.println(avgMinDegree + "\t" + avgMaxDegree + "\t" +avgMeanDegree+ "\t" +avgNumberOfEdges + "\t" + avgEdgeDensity+ "\t" +avgMeanCliqueSize+ "\t" +avgMaxCliqueSize + "\t" + avgMinCliqueSize+ "\t" + avgMaximalCliques + "\t" + min + "\t" + max + "\t" + avg);
         }
-        // avg = avg / samples.length;
-        
-        // System.out.println("max: " + max);
-        // System.out.println("min: " + min);
-        // System.out.println("avg: " + avg);
-            // MaximumClique object = new MaximumClique();
-            // for(int j=0; j<6; j++){
-            //     object.addVertex();
-            // }
-            // System.out.println(object.getMaximumCliqueSize());
-            // object.printEdges();
-            // object.findRandomClique();
-            // object.addVertex();
-            // object.printAdjList();
-            // object.addVertex();
-            // object.printAdjList();
-            // object.findRandomClique();
     }
 }
