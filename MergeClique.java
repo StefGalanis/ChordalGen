@@ -37,7 +37,6 @@ public class MergeClique{
         this.maxDegree = -1;
         this.avgDegree = 0;
         this.cliquesToRemove = new ArrayList<Integer>();
-        // printEdges();
     }
 
     public MergeClique(String fileName){
