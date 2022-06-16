@@ -37,7 +37,7 @@ public class MergeClique{
         this.maxDegree = -1;
         this.avgDegree = 0;
         this.cliquesToRemove = new ArrayList<Integer>();
-        printEdges();
+        // printEdges();
     }
 
     public MergeClique(String fileName){
@@ -277,11 +277,11 @@ public class MergeClique{
                 }
                 this.cliquesToRemove.add(edge0);
                 this.cliqueTreeEdges.remove(randomEdgeIndex);
-                printCliqueTree();
+                // printCliqueTree();
             }
             else{
                 System.out.println("Graph is fully connected with edge density " + edgeDensity );
-                printAdjList();
+                // printAdjList();
                 break;
             }
             edgeDensity = this.numberOfEdges / ((this.numberOfVertices*(this.numberOfVertices - 1))*0.5);
