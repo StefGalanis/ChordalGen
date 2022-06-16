@@ -37,7 +37,6 @@ public class MergeClique{
         this.maxDegree = -1;
         this.avgDegree = 0;
         this.cliquesToRemove = new ArrayList<Integer>();
-        // buildExample(0);
         printEdges();
     }
 
@@ -73,7 +72,6 @@ public class MergeClique{
             System.out.println("An error occurred.");
             e.printStackTrace();
         }
-        // System.out.println(this.adjList);
         this.numberOfVertices = this.adjList.size();
         this.vertices = new ArrayList(Arrays.asList(createVerticesArray()));
     }
@@ -104,7 +102,6 @@ public class MergeClique{
                 this.numberOfVertices++;
             }
         }
-        // printAdjList();
     }
 
     public void buildExample(){
@@ -125,9 +122,7 @@ public class MergeClique{
         this.adjList.add(new ArrayList(Arrays.asList(adj6)));
         this.numberOfVertices = 7;
         this.numberOfEdges = 10;
-        // this.edgeCounter = 10;
         this.vertices = new ArrayList(Arrays.asList(vetrexArray));
-        // printAdjList();
     }
 
     public void printAdjList(){
@@ -141,9 +136,8 @@ public class MergeClique{
     public void createCliqueTree(){
         int prev_card = 0;
         ArrayList<Integer> list = new ArrayList<Integer>();
-        int edgeCounter = 0; // s <- 0
+        int edgeCounter = 0;
         ArrayList<Integer> clique = new ArrayList<Integer>();
-        // Et <- 0
         for (int i=this.numberOfVertices; i>0; i--){
             int max = -1;
             int uVertex = -1;
@@ -158,7 +152,6 @@ public class MergeClique{
             }
             int new_card = max;
             if (new_card <= prev_card){
-                // System.out.println("uVertex:" + uVertex);
                 if (!clique.isEmpty()){
                     this.cliqueList.add(clique);
                     edgeCounter++;
@@ -182,10 +175,6 @@ public class MergeClique{
             prev_card = new_card;
         }
         this.cliqueList.add(clique);
-        // printCliqueTree();
-        // System.out.println("Clique Tree number of edges:" + edgeCounter);
-        // System.out.println("maximal cliques " + cliqueList.size());
-        // System.out.println("L:" + list);
     }
 
 
@@ -241,7 +230,6 @@ public class MergeClique{
 
     public void mergeCliques(String edgeDensityLimit){
         double edgeDensity = this.numberOfEdges / ((this.numberOfVertices*(this.numberOfVertices - 1))*0.5);
-        // System.out.println(edgeDensity);
         double desiredEdgeDensity = 0;
         if (edgeDensityLimit.equals("n*log(n)")){
             desiredEdgeDensity = (this.numberOfVertices*Math.log(this.numberOfVertices))/((this.numberOfVertices*(this.numberOfVertices - 1))*0.5);
@@ -252,7 +240,6 @@ public class MergeClique{
         else{
             System.exit(1);
         }
-        // System.out.println("desiredEdgeDensity :" + desiredEdgeDensity);
         while(edgeDensity<desiredEdgeDensity){
             if (desiredEdgeDensity>1){
                 System.exit(1);
@@ -308,10 +295,6 @@ public class MergeClique{
         int min = 1;
         boolean flag = false;
         double avg = 0;
-        // for (int cliqueIndex : this.cliquesToRemove){
-        //     this.cliqueList.remove(cliqueIndex);
-        //     System.out.println(this.cliqueList);
-        // }
         for (int i=0; i<this.cliqueList.size(); i++){
             if(!this.cliquesToRemove.contains(i)){
                 ArrayList<Integer> list = this.cliqueList.get(i);
@@ -370,7 +353,6 @@ public class MergeClique{
     public void calcualteDegree(){
         boolean flag = false;
         int sum = 0;
-        // System.out.println(this.adjList);
         for (ArrayList<Integer> List : this.adjList){
             int degree = List.size();
             if (flag == false){
@@ -386,7 +368,6 @@ public class MergeClique{
             sum = sum + degree;
         }
         this.avgDegree = sum / this.numberOfVertices;
-        // System.out.println("minDegree: " + this.minDegree + " maxDegree: " + this.maxDegree + " avgDegree: " + this.avgDegree);
     }
 
     public int getminDegree(){
@@ -407,14 +388,6 @@ public class MergeClique{
     }
 
     public static void main(String args[]){
-        MergeClique example = new MergeClique();
-        example.buildExample(5);
-        example.createCliqueTree();
-        example.printCliqueTree();
-        example.mergeCliques("n*log(n)");
-        example.printCliqueTree();
-        System.out.println(example.getEdgeDensity());
-        System.exit(1);
         Integer [] samples = new Integer[] { 20, 40, 60, 80, 100 };
         String [] edgeDensities = new String[] {"n*log(n)","n*sqrt(n)"};
         for (String edgeDensity : edgeDensities){
@@ -478,10 +451,6 @@ public class MergeClique{
                 System.out.println("Statistics for graph with " + sample + " nodes");
                 System.out.println("EdgeDesnity" + "\t" +"MinDegree" + "\t" + "MaxDegree" + "\t" + "MeanDegree" + "\t" + "MinClSize" + "\t" + "MaxClSize" + "\t" + "MeanClSize" + "\t" + "Edges" + "\t" + "Cliques" + "\t" + "min" + "\t" + "max" + "\t" + "avg");
                 System.out.println(avgEdgeDensity + "\t" + avgMinDegree + "\t" + avgMaxDegree + "\t" + avgMeanDegree + "\t" + avgMinCliqueSize + "\t" + avgMaxCliqueSize + "\t" + avgMeanCliqueSize + "\t" + avgEdges + "\t" + avgMaximalCliques + "\t" + min + "\t" + max + "\t" + avg);
-                
-                // object.printCliqueTree();
-                // System.out.println("edges before: " + object.getNumberOfEdges());
-                // System.out.println("edges after: " + object.getNumberOfEdges());
             }
         }
     }
