@@ -276,11 +276,9 @@ public class MergeClique{
                 }
                 this.cliquesToRemove.add(edge0);
                 this.cliqueTreeEdges.remove(randomEdgeIndex);
-                // printCliqueTree();
             }
             else{
                 System.out.println("Graph is fully connected with edge density " + edgeDensity );
-                // printAdjList();
                 break;
             }
             edgeDensity = this.numberOfEdges / ((this.numberOfVertices*(this.numberOfVertices - 1))*0.5);
